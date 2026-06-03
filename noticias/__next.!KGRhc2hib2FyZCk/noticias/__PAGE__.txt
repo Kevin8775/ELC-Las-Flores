@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[97367,["/ELC-Las-Flores/_next/static/chunks/0njs67k.d_y9-.js","/ELC-Las-Flores/_next/static/chunks/0d3shmwh5_nmn.js"],"OutletBoundary"]
+3:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","main",null,{"children":[["$","h1",null,{"className":"font-serif text-3xl font-bold text-[#1E3A5F]","children":"Gestion de noticias"}],["$","div",null,{"className":"elc-card mt-6 p-5","children":[["$","p",null,{"className":"text-sm text-slate-600","children":"Este modulo queda preparado para crear, editar y publicar noticias con categorias: NOTICIA, EVENTO, COMUNICADO y LOGRO."}],["$","button",null,{"className":"mt-4 rounded-md bg-[#1E3A5F] px-4 py-2 text-sm font-semibold text-white","children":"Crear noticia"}]]}]]}],null,["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"ZtvZGR5U6HGCKd9HD8D2N"}
+4:null
