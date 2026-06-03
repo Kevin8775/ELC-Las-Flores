@@ -1,0 +1,280 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  DOCENTE
+  ESTUDIANTE
+}
+
+enum EstadoGeneral {
+  ACTIVO
+  INACTIVO
+}
+
+enum EstadoEstudiante {
+  ACTIVO
+  INACTIVO
+  EGRESADO
+}
+
+enum Genero {
+  M
+  F
+}
+
+enum NivelAcademico {
+  BASICO
+  INTERMEDIO
+  AVANZADO
+}
+
+enum Turno {
+  MATUTINO
+  VESPERTINO
+  SABATINO
+}
+
+enum TipoPago {
+  MENSUAL
+  SEMANAL
+}
+
+enum EstadoPago {
+  PAGADO
+  PENDIENTE
+  PARCIAL
+  VENCIDO
+}
+
+enum MetodoPago {
+  EFECTIVO
+  TRANSFERENCIA
+  OTRO
+}
+
+enum CategoriaNoticia {
+  NOTICIA
+  EVENTO
+  COMUNICADO
+  LOGRO
+}
+
+enum TipoPeriodoNota {
+  MENSUAL
+  TRIMESTRAL
+  SEMESTRAL
+  ANUAL
+}
+
+model User {
+  id           String   @id @default(cuid())
+  nombre       String
+  email        String   @unique
+  passwordHash String
+  role         UserRole
+  activo       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  admin      Admin?
+  docente    Docente?
+  estudiante Estudiante?
+  pagos      Pago[]      @relation("PagoRegistradoPor")
+}
+
+model Admin {
+  id                String        @id @default(cuid())
+  nombre            String
+  correoElectronico String        @unique
+  telefono          String?
+  fechaNacimiento   DateTime?
+  fotoPerfil        String?
+  nivelAcceso       UserRole
+  estado            EstadoGeneral @default(ACTIVO)
+  userId            String        @unique
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs              ActivityLog[]
+  noticias          Noticia[]
+  controlesPagos    ControlPagos[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+model Docente {
+  id                String        @id @default(cuid())
+  nombre            String
+  correoElectronico String        @unique
+  telefono          String?
+  fechaNacimiento   DateTime?
+  genero            Genero?
+  direccion         String?
+  fotoPerfil        String?
+  especialidad      String?
+  fechaIngreso      DateTime?
+  estado            EstadoGeneral @default(ACTIVO)
+  userId            String        @unique
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  estudiantes       Estudiante[]
+  notas             Nota[]
+  grupos            Grupo[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+model Estudiante {
+  id                String           @id @default(cuid())
+  numeroMatricula   String           @unique
+  nombre            String
+  fechaNacimiento   DateTime
+  genero            Genero
+  correoElectronico String?          @unique
+  telefono          String?
+  direccion         String
+  fotoPerfil        String?
+  nivel             NivelAcademico
+  turno             Turno            @default(SABATINO)
+  fechaInscripcion  DateTime         @default(now())
+  estado            EstadoEstudiante @default(ACTIVO)
+
+  tutorNombre     String
+  tutorParentesco String
+  tutorCorreo     String?
+  tutorTelefono   String
+  tutorDireccion  String?
+
+  docenteAsignadoId String?
+  docenteAsignado   Docente? @relation(fields: [docenteAsignadoId], references: [id], onDelete: SetNull)
+
+  grupoId String?
+  grupo   Grupo?  @relation(fields: [grupoId], references: [id], onDelete: SetNull)
+
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  pagos         Pago[]
+  notas         Nota[]
+  controlesPagos ControlPagos[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Grupo {
+  id          String           @id @default(cuid())
+  nivel       NivelAcademico
+  turno       Turno
+  estado      EstadoGeneral    @default(ACTIVO)
+  docenteId   String?
+  docente     Docente?         @relation(fields: [docenteId], references: [id], onDelete: SetNull)
+  estudiantes Estudiante[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([nivel, turno])
+}
+
+model Pago {
+  id               String     @id @default(cuid())
+  estudianteId     String
+  estudiante       Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  tipoPago         TipoPago
+  concepto         String
+  mes              Int?
+  anio             Int?
+  numeroSemana     Int?
+  fechaInicio      DateTime?
+  fechaFin         DateTime?
+  monto            Decimal    @db.Decimal(10, 2)
+  montoPagado      Decimal    @db.Decimal(10, 2)
+  saldo            Decimal    @db.Decimal(10, 2)
+  estadoPago       EstadoPago
+  metodoPago       MetodoPago
+  fechaPago        DateTime?
+  fechaVencimiento DateTime
+  recibo           String     @unique
+  observaciones    String?
+  registradoPorId  String
+  registradoPor    User       @relation("PagoRegistradoPor", fields: [registradoPorId], references: [id])
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+}
+
+model Noticia {
+  id               String           @id @default(cuid())
+  titulo           String
+  contenido        String
+  imagen           String?
+  categoria        CategoriaNoticia
+  fechaPublicacion DateTime
+  publicado        Boolean          @default(false)
+  autorId          String
+  autor            Admin            @relation(fields: [autorId], references: [id], onDelete: Cascade)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model Nota {
+  id            String          @id @default(cuid())
+  estudianteId  String
+  estudiante    Estudiante      @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  docenteId     String
+  docente       Docente         @relation(fields: [docenteId], references: [id], onDelete: Cascade)
+  periodo       String
+  tipoPeriodo   TipoPeriodoNota
+  unidad        String
+  descripcion   String
+  calificacion  Decimal         @db.Decimal(5, 2)
+  escalaLetras  String
+  observaciones String?
+  fechaRegistro DateTime        @default(now())
+  registradoPor String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model ConfiguracionGeneral {
+  id                  String   @id @default(cuid())
+  nombreAcademia      String
+  direccion           String
+  telefono            String
+  correo              String
+  redesSociales       Json?
+  logoUrl             String?
+  tarifaMensual       Decimal  @db.Decimal(10, 2)
+  tarifaSemanal       Decimal  @db.Decimal(10, 2)
+  anioEscolarActivo   Int
+  emailNotificaciones String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  accion    String
+  entidad   String
+  entidadId String
+  detalle   String?
+  adminId   String
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model ControlPagos {
+  id            String     @id @default(cuid())
+  estudianteId  String
+  estudiante    Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  mesInicio     Int
+  mesFin        Int
+  anio          Int
+  modo          String     @default("EN_BLANCO")
+  generadoPorId String
+  generadoPor   Admin      @relation(fields: [generadoPorId], references: [id])
+  createdAt     DateTime   @default(now())
+}
