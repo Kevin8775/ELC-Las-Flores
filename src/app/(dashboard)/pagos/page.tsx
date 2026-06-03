@@ -24,6 +24,7 @@ interface Pago {
   saldo: string;
   estadoPago: string;
   metodoPago: string;
+  fechaInicio?: string | null;
   fechaPago: string | null;
   fechaVencimiento: string;
   observaciones: string | null;
@@ -49,8 +50,8 @@ const defaultForm = {
   monto: "",
   montoPagado: "",
   saldo: "0",
-  estadoPago: "PENDIENTE" as const,
-  metodoPago: "EFECTIVO" as const,
+  estadoPago: "PENDIENTE",
+  metodoPago: "EFECTIVO",
   fechaPago: new Date().toISOString().slice(0, 10),
   fechaVencimiento: "",
   observaciones: "",

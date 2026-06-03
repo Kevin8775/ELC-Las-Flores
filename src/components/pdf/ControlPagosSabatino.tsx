@@ -164,8 +164,8 @@ export function ControlPagosSabatinoPDF({ studentName, studentCode, periodLabel,
   return (
     <Document>
       <Page size="LETTER" style={styles.page}>
-        {watermarkUrl && <Image style={styles.watermark} src={watermarkUrl} alt="" />}
-        {logoUrl && <Image style={styles.logo} src={logoUrl} alt="" />}
+        {watermarkUrl && <Image style={styles.watermark} src={watermarkUrl} />}
+        {logoUrl && <Image style={styles.logo} src={logoUrl} />}
         <View style={styles.header}>
           <Text style={styles.academyName}>
             {academyName || "THE ENGLISH LANGUAGE CENTER LAS FLORES MASAYA"}

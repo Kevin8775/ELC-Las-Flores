@@ -55,8 +55,14 @@ export default function DashboardPage() {
             pagosPendientes,
             ingresosMes,
           },
-          ultimosPagos: pagosRes.pagos.slice(0, 4),
-          ultimasNoticias: noticiasRes.noticias.slice(0, 3),
+          ultimosPagos: pagosRes.pagos.slice(0, 4).map((p) => ({
+            ...p,
+            montoPagado: Number(p.montoPagado),
+          })),
+          ultimasNoticias: noticiasRes.noticias.slice(0, 3).map((n) => ({
+            ...n,
+            autor: (n as any).autor ?? "",
+          })),
         });
       })
       .catch(() => setData(null))
