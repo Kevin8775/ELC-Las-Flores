@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { Loader2, Send } from "lucide-react";
 
 type Noticia = {
   id: string;
@@ -19,6 +20,11 @@ const fallbackNoticias: Noticia[] = [
 export function NewsSection() {
   const [noticias, setNoticias] = useState<Noticia[]>([]);
   const [loading, setLoading] = useState(true);
+  const [correo, setCorreo] = useState("");
+  const [mensaje, setMensaje] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     api<{ noticias: Noticia[] }>("/noticias")
@@ -36,6 +42,28 @@ export function NewsSection() {
       });
     } catch {
       return dateStr;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!correo.trim() || !mensaje.trim()) return;
+    setSending(true);
+    setError("");
+
+    try {
+      await api("/comentarios", {
+        method: "POST",
+        body: JSON.stringify({ correo: correo.trim(), mensaje: mensaje.trim() }),
+        skipAuth: true,
+      });
+      setSent(true);
+      setCorreo("");
+      setMensaje("");
+    } catch {
+      setError("Ocurrió un error al enviar tu comentario. Intenta de nuevo.");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -83,6 +111,48 @@ export function NewsSection() {
                   </p>
                 </article>
               ))}
+        </div>
+
+        <div className="mx-auto mt-14 max-w-lg" data-aos="fade-up">
+          <div className="rounded-[28px] border border-slate-200 bg-white p-8 shadow-sm">
+            <h3 className="text-center font-serif text-xl font-bold text-[#1E3A5F]">Déjanos tu comentario</h3>
+            <p className="mt-2 text-center text-sm text-slate-500">¿Qué opinas de nuestras noticias? Te leemos.</p>
+
+            {sent ? (
+              <div className="mt-6 rounded-2xl bg-green-50 p-6 text-center">
+                <p className="font-semibold text-green-800">Gracias por tu comentario.</p>
+                <p className="mt-1 text-sm text-green-600">Será revisado por nuestros administradores.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+                <input
+                  type="email"
+                  placeholder="Tu correo electrónico"
+                  value={correo}
+                  onChange={(e) => setCorreo(e.target.value)}
+                  required
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                />
+                <textarea
+                  placeholder="Escribe tu comentario..."
+                  rows={4}
+                  value={mensaje}
+                  onChange={(e) => setMensaje(e.target.value)}
+                  required
+                  className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                />
+                {error && <p className="text-sm text-red-600">{error}</p>}
+                <button
+                  type="submit"
+                  disabled={sending}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1E3A5F] px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#2E5587] disabled:opacity-60"
+                >
+                  {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                  {sending ? "Enviando..." : "Enviar comentario"}
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </section>

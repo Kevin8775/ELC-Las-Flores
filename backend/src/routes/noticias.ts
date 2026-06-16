@@ -37,3 +37,8 @@ noticiasRouter.post("/", requireAuth, async (req, res) => {
   });
   res.status(201).json({ noticia });
 });
+
+noticiasRouter.delete("/:id", requireAuth, async (req, res) => {
+  await prisma.noticia.delete({ where: { id: req.params.id as string } });
+  res.json({ success: true });
+});

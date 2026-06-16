@@ -13,10 +13,17 @@ import { gruposRouter } from "./routes/grupos";
 import { dashboardRouter } from "./routes/dashboard";
 import { noticiasRouter } from "./routes/noticias";
 import { configuracionRouter } from "./routes/configuracion";
+import { testimoniosRouter } from "./routes/testimonios";
+import { comentariosRouter } from "./routes/comentarios";
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+const allowedOrigins = ["http://localhost:3000"];
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
@@ -28,6 +35,8 @@ app.use("/api/grupos", gruposRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/noticias", noticiasRouter);
 app.use("/api/configuracion", configuracionRouter);
+app.use("/api/testimonios", testimoniosRouter);
+app.use("/api/comentarios", comentariosRouter);
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });

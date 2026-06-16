@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Quote } from "lucide-react";
+import { Loader2, Quote, Send } from "lucide-react";
 
 type Testimonial = {
   id: string;
@@ -35,6 +35,12 @@ const fallbackTestimonials: Testimonial[] = [
 export function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
+  const [nombre, setNombre] = useState("");
+  const [texto, setTexto] = useState("");
+  const [rol, setRol] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     api<{ testimonios: Testimonial[] }>("/testimonios")
@@ -42,6 +48,29 @@ export function TestimonialsSection() {
       .catch(() => setTestimonials(fallbackTestimonials))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nombre.trim() || !texto.trim()) return;
+    setSending(true);
+    setError("");
+
+    try {
+      await api("/testimonios", {
+        method: "POST",
+        body: JSON.stringify({ nombre: nombre.trim(), texto: texto.trim(), rol: rol.trim() || undefined }),
+        skipAuth: true,
+      });
+      setSent(true);
+      setNombre("");
+      setTexto("");
+      setRol("");
+    } catch {
+      setError("Ocurrió un error al enviar tu testimonio. Intenta de nuevo.");
+    } finally {
+      setSending(false);
+    }
+  };
 
   const items = testimonials.length > 0 ? testimonials : fallbackTestimonials;
 
@@ -88,6 +117,55 @@ export function TestimonialsSection() {
                   </div>
                 </article>
               ))}
+        </div>
+
+        <div className="mx-auto mt-14 max-w-lg" data-aos="fade-up">
+          <div className="rounded-[28px] border border-slate-200 bg-white p-8 shadow-sm">
+            <h3 className="text-center font-serif text-xl font-bold text-[#1E3A5F]">Comparte tu experiencia</h3>
+            <p className="mt-2 text-center text-sm text-slate-500">Tu opinión ayuda a otros a conocer nuestra institución.</p>
+
+            {sent ? (
+              <div className="mt-6 rounded-2xl bg-green-50 p-6 text-center">
+                <p className="font-semibold text-green-800">Gracias por compartir tu experiencia.</p>
+                <p className="mt-1 text-sm text-green-600">Será revisada por nuestros administradores antes de publicarse.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+                <input
+                  type="text"
+                  placeholder="Tu nombre"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  required
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                />
+                <textarea
+                  placeholder="Escribe tu experiencia..."
+                  rows={4}
+                  value={texto}
+                  onChange={(e) => setTexto(e.target.value)}
+                  required
+                  className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                />
+                <input
+                  type="text"
+                  placeholder="Tu rol (ej: Madre de familia, Estudiante) — opcional"
+                  value={rol}
+                  onChange={(e) => setRol(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                />
+                {error && <p className="text-sm text-red-600">{error}</p>}
+                <button
+                  type="submit"
+                  disabled={sending}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1E3A5F] px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#2E5587] disabled:opacity-60"
+                >
+                  {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                  {sending ? "Enviando..." : "Enviar testimonio"}
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </section>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { BarChart3, BookOpenText, ChevronLeft, ChevronRight, CreditCard, GraduationCap, LayoutDashboard, Megaphone, Settings2, Users2 } from "lucide-react";
+import { BarChart3, BookOpenText, ChevronLeft, ChevronRight, CreditCard, GraduationCap, LayoutDashboard, Megaphone, MessageSquareText, Settings2, ThumbsUp, Users2 } from "lucide-react";
 
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -11,6 +11,8 @@ const links = [
   { href: "/docentes", label: "Docentes", icon: GraduationCap },
   { href: "/grupos", label: "Grupos", icon: BookOpenText },
   { href: "/pagos", label: "Pagos", icon: CreditCard },
+  { href: "/testimonios", label: "Testimonios", icon: ThumbsUp },
+  { href: "/comentarios", label: "Comentarios", icon: MessageSquareText },
   { href: "/noticias", label: "Noticias", icon: Megaphone },
   { href: "/reportes", label: "Reportes", icon: BarChart3 },
   { href: "/configuracion", label: "Configuracion", icon: Settings2 },

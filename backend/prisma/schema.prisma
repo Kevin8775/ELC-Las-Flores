@@ -266,6 +266,25 @@ model ActivityLog {
   createdAt DateTime @default(now())
 }
 
+model Testimonio {
+  id        String   @id @default(cuid())
+  nombre    String
+  texto     String
+  rol       String?
+  aprobado  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comentario {
+  id        String   @id @default(cuid())
+  correo    String
+  mensaje   String
+  leido     Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model ControlPagos {
   id            String     @id @default(cuid())
   estudianteId  String
