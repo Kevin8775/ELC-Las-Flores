@@ -9,20 +9,10 @@ services:
     healthCheckPath: /api/health
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: elc-las-flores-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
-        generateValue: true
+        sync: false
       - key: RESEND_API_KEY
         sync: false
       - key: FRONTEND_URL
         value: https://elc-las-flores.netlify.app
-      - key: EMAIL_FROM
-        value: ELC Las Flores <onboarding@resend.dev>
-
-databases:
-  - name: elc-las-flores-db
-    region: oregon
-    plan: free
-    databaseName: elc_las_flores
