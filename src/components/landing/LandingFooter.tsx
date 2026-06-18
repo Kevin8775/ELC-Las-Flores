@@ -43,7 +43,7 @@ export function LandingFooter() {
             <ul className="mt-4 space-y-3">
               {[
                 { href: "https://www.facebook.com/profile.php?id=100063896447056", label: "Facebook" },
-                { href: "https://www.tiktok.com/@elclasflores", label: "TikTok" },
+                { href: "https://vm.tiktok.com/ZS9jmxdV4nxRF-KNxhM/", label: "TikTok" },
                 { href: "https://wa.me/50578421018", label: "WhatsApp" },
               ].map((link) => (
                 <li key={link.label}>
