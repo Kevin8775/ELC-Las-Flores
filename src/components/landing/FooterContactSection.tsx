@@ -5,7 +5,7 @@ const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent
 
 export function FooterContactSection() {
   return (
-    <section id="contacto" className="mx-auto max-w-6xl px-4 pb-16">
+    <section id="contacto" className="mx-auto max-w-6xl px-4 pt-20 pb-16">
       <div
         className="relative overflow-hidden rounded-[28px] bg-[#1E3A5F] px-8 py-14 text-center shadow-2xl shadow-[#1E3A5F]/20"
         data-aos="fade-up"
