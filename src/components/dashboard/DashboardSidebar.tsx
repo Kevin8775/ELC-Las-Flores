@@ -30,7 +30,7 @@ export function DashboardSidebar() {
           <div className={`flex items-center gap-2 ${collapsed ? "justify-center" : "justify-between"}`}>
             <Link href="/dashboard" className={`flex min-w-0 items-center gap-3 ${collapsed ? "justify-center p-1" : "p-2"}`}>
               <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/95 shadow-sm">
-                <Image src="/LogoELCLF.png" alt="ELC Las Flores" width={48} height={48} className="h-full w-full object-contain p-0.5" />
+                <Image src="/LogoELCLFM.png" alt="ELC Las Flores" width={48} height={48} className="h-full w-full object-contain p-0.5" />
               </span>
               {!collapsed && (
                 <div className="min-w-0">

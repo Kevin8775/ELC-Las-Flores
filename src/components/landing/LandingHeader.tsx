@@ -23,7 +23,7 @@ export function LandingHeader() {
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <a href="/" className="flex items-center gap-3">
           <span className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-lg shadow-slate-900/10">
-            <Image src="/LogoELCLF.png" alt="ELC Las Flores" width={56} height={56} className="h-full w-full object-contain p-0.5" />
+            <Image src="/LogoELCLFM.png" alt="ELC Las Flores" width={56} height={56} className="h-full w-full object-contain p-0.5" />
           </span>
           <div>
             <p className="text-xs uppercase tracking-[0.28em] text-slate-500">The English Language Center</p>

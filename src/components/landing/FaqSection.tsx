@@ -35,6 +35,23 @@ export function FaqSection() {
 
   return (
     <section id="faq" className="mx-auto max-w-6xl px-4 py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.map((faq) => ({
+              "@type": "Question",
+              name: faq.pregunta,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: faq.respuesta,
+              },
+            })),
+          }),
+        }}
+      />
       <div className="text-center" data-aos="fade-up">
         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#2E5587]">Preguntas frecuentes</p>
         <h2 className="mt-3 font-serif text-3xl font-black text-[#1E3A5F] md:text-4xl">Resolvemos tus dudas</h2>
