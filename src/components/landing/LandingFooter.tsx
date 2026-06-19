@@ -37,6 +37,11 @@ export function LandingFooter() {
                   </a>
                 </li>
               ))}
+              <li className="pt-2">
+                <a href="/login" className="text-xs text-slate-400 transition hover:text-primary">
+                  Acceso admin
+                </a>
+              </li>
             </ul>
           </div>
 
