@@ -93,6 +93,23 @@ export function FaqSection() {
           );
         })}
       </div>
+
+      <div className="mx-auto mt-14 max-w-3xl text-center" data-aos="fade-up">
+        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Ubicación</p>
+        <h3 className="mt-2 font-serif text-2xl font-bold text-primary">Visítanos en Las Flores</h3>
+        <div className="mt-6 overflow-hidden rounded-2xl shadow-lg ring-1 ring-slate-100">
+          <iframe
+            src="https://maps.google.com/maps?q=11.9911762,-86.0314609&z=17&output=embed"
+            width="100%"
+            height="400"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Ubicación de ELC Las Flores"
+          />
+        </div>
+      </div>
     </section>
   );
 }
