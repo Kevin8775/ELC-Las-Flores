@@ -113,9 +113,6 @@ export function NewsSection() {
                       <span className="text-xs text-slate-500">{formatDate(item.createdAt)}</span>
                     </div>
                     <h3 className="mt-5 text-xl font-bold text-slate-900">{item.titulo}</h3>
-                    <p className="mt-3 text-sm leading-7 text-slate-600">
-                      Información institucional, eventos y comunicados para mantener a la comunidad al día.
-                    </p>
                   </article>
                 );
               })}
@@ -133,22 +130,30 @@ export function NewsSection() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                <input
-                  type="email"
-                  placeholder="Tu correo electrónico"
-                  value={correo}
-                  onChange={(e) => setCorreo(e.target.value)}
-                  required
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-                />
-                <textarea
-                  placeholder="Escribe tu comentario..."
-                  rows={4}
-                  value={mensaje}
-                  onChange={(e) => setMensaje(e.target.value)}
-                  required
-                  className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-                />
+                <div>
+                  <label htmlFor="c-correo" className="sr-only">Tu correo electrónico</label>
+                  <input
+                    id="c-correo"
+                    type="email"
+                    placeholder="Tu correo electrónico"
+                    value={correo}
+                    onChange={(e) => setCorreo(e.target.value)}
+                    required
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="c-mensaje" className="sr-only">Tu comentario</label>
+                  <textarea
+                    id="c-mensaje"
+                    placeholder="Escribe tu comentario..."
+                    rows={4}
+                    value={mensaje}
+                    onChange={(e) => setMensaje(e.target.value)}
+                    required
+                    className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                  />
+                </div>
                 {error && <p className="text-sm text-red-600">{error}</p>}
                 <button
                   type="submit"

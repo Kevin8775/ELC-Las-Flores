@@ -115,29 +115,41 @@ export function TestimonialsSection() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                <input
-                  type="text"
-                  placeholder="Tu nombre"
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                  required
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-                />
-                <textarea
-                  placeholder="Escribe tu experiencia..."
-                  rows={4}
-                  value={texto}
-                  onChange={(e) => setTexto(e.target.value)}
-                  required
-                  className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-                />
-                <input
-                  type="text"
-                  placeholder="Tu rol (ej: Madre de familia, Estudiante) — opcional"
-                  value={rol}
-                  onChange={(e) => setRol(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
-                />
+                <div>
+                  <label htmlFor="t-nombre" className="sr-only">Tu nombre</label>
+                  <input
+                    id="t-nombre"
+                    type="text"
+                    placeholder="Tu nombre"
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
+                    required
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="t-texto" className="sr-only">Tu experiencia</label>
+                  <textarea
+                    id="t-texto"
+                    placeholder="Escribe tu experiencia..."
+                    rows={4}
+                    value={texto}
+                    onChange={(e) => setTexto(e.target.value)}
+                    required
+                    className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="t-rol" className="sr-only">Tu rol</label>
+                  <input
+                    id="t-rol"
+                    type="text"
+                    placeholder="Tu rol (ej: Madre de familia, Estudiante) — opcional"
+                    value={rol}
+                    onChange={(e) => setRol(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                  />
+                </div>
                 {error && <p className="text-sm text-red-600">{error}</p>}
                 <button
                   type="submit"

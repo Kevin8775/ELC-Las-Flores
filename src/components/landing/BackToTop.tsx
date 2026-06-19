@@ -1,38 +1,24 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 
 export function BackToTop() {
   const [visible, setVisible] = useState(false);
-  const [opacity, setOpacity] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const sentinel = document.createElement("div");
-    sentinel.style.height = "1px";
-    sentinel.style.position = "absolute";
-    sentinel.style.top = "400px";
-    document.body.appendChild(sentinel);
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const show = !entry.isIntersecting;
-        setVisible(show);
-        requestAnimationFrame(() => setOpacity(show ? 1 : 0));
-      },
-      { threshold: 0 }
-    );
-
-    observer.observe(sentinel);
-    return () => {
-      observer.disconnect();
-      document.body.removeChild(sentinel);
-    };
+    const onScroll = () => setVisible(window.scrollY > 400);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <div ref={ref} className="fixed bottom-5 left-5 z-40" style={{ opacity, transform: `scale(${visible ? 1 : 0.8})`, transition: "opacity 0.3s ease, transform 0.3s ease", pointerEvents: visible ? "auto" : "none" }}>
+    <div
+      className={`fixed bottom-5 left-5 z-40 transition-all duration-300 ${
+        visible ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"
+      }`}
+    >
       <button
         type="button"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

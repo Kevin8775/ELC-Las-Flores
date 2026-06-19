@@ -55,7 +55,7 @@ export function HeroSection() {
               Conocer más
             </a>
           </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3" data-aos="fade-up" data-aos-delay="400">
+          <div className="mt-10 grid gap-4 sm:grid-cols-2" data-aos="fade-up" data-aos-delay="400">
             {stats.map((item) => (
               <div key={item.label} className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur">
                 <p className="text-2xl font-black text-white">{item.value}</p>
@@ -71,23 +71,23 @@ export function HeroSection() {
           data-aos-delay="200"
         >
           <div className="rounded-[24px] bg-white p-6 text-slate-900">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Agenda destacada</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Turno sabatino</p>
             <div className="mt-5 space-y-4">
               <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-xs font-semibold uppercase text-slate-500">Próxima actividad</p>
-                <p className="mt-2 text-lg font-bold">Inicio de clases sabatinas</p>
-                <p className="mt-1 text-sm text-slate-600">Organización de horarios, grupos y acompañamiento al estudiante.</p>
+                <p className="text-xs font-semibold uppercase text-slate-500">Modalidad</p>
+                <p className="mt-2 text-lg font-bold">Clases todos los sábados</p>
+                <p className="mt-1 text-sm text-slate-600">Horarios según nivel y edad del estudiante.</p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl border border-slate-200 p-4">
                   <CalendarDays className="h-5 w-5 text-primary" />
-                  <p className="mt-3 text-sm font-semibold text-slate-900">Sábados</p>
-                  <p className="text-sm text-slate-600">Modalidad principal</p>
+                  <p className="mt-3 text-sm font-semibold text-slate-900">Niños</p>
+                  <p className="text-sm text-slate-600">Nivel inicial</p>
                 </div>
                 <div className="rounded-2xl border border-slate-200 p-4">
                   <CheckCircle2 className="h-5 w-5 text-primary" />
-                  <p className="mt-3 text-sm font-semibold text-slate-900">Procesos claros</p>
-                  <p className="text-sm text-slate-600">Pagos, reportes y noticias</p>
+                  <p className="mt-3 text-sm font-semibold text-slate-900">Jóvenes y adultos</p>
+                  <p className="text-sm text-slate-600">Niveles intermedios y avanzados</p>
                 </div>
               </div>
             </div>
