@@ -95,7 +95,7 @@ export function LandingCarousel() {
                   src={slide.src}
                   alt={slide.alt}
                   fill
-                  className="object-contain p-4"
+                  className="object-cover md:object-contain p-1 md:p-4"
                   priority={i === 0}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
                 />

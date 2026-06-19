@@ -11,7 +11,6 @@ const navLinks = [
   { href: "#noticias", label: "Noticias" },
   { href: "#sobre", label: "Sobre nosotros" },
   { href: "#testimonios", label: "Testimonios" },
-  { href: "#horarios", label: "Horarios" },
   { href: "#contacto", label: "Contacto" },
 ];
 
