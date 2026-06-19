@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ExternalLink, MapPin } from "lucide-react";
+
+const MAPS_URL = "https://maps.app.goo.gl/Hq9XxSydeXZN1dAz6";
 
 const faqs = [
   {
@@ -25,14 +27,16 @@ const faqs = [
     respuesta: "Los pagos se realizan únicamente en nuestras instalaciones en Las Flores, Masaya. Puedes consultar tus recibos y dar seguimiento a través de WhatsApp.",
   },
   {
-    pregunta: "¿Dónde están ubicados?",
-    respuesta: "Estamos ubicados en Las Flores, Masaya, Nicaragua. Puedes visitarnos durante los sábados en horario de clases o contactarnos para agendar una cita.",
-  },
-  {
     pregunta: "¿Ofrecen clases en línea o solo presenciales?",
     respuesta: "Actualmente nuestra modalidad es presencial sabatina. Sin embargo, complementamos la enseñanza con recursos digitales y comunicación constante a través de WhatsApp.",
   },
+  {
+    pregunta: "¿Dónde están ubicados?",
+    respuesta: "Estamos ubicados en Las Flores, Masaya, Nicaragua. Puedes visitarnos durante los sábados en horario de clases o contactarnos para agendar una cita.",
+  },
 ];
+
+const LOCATION_INDEX = faqs.length - 1;
 
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -94,8 +98,8 @@ export function FaqSection() {
         })}
       </div>
 
-      {openIndex === 5 && (
-        <div className="mx-auto mt-8 max-w-3xl" data-aos="fade-up">
+      {openIndex === LOCATION_INDEX && (
+        <div className="mx-auto mt-8 max-w-3xl space-y-4" data-aos="fade-up">
           <div className="overflow-hidden rounded-2xl shadow-lg ring-1 ring-slate-100">
             <iframe
               src="https://maps.google.com/maps?q=11.9911762,-86.0314609&z=17&output=embed"
@@ -108,6 +112,16 @@ export function FaqSection() {
               title="Ubicación de ELC Las Flores"
             />
           </div>
+          <a
+            href={MAPS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-primary/15 transition hover:-translate-y-0.5 hover:bg-primary-light"
+          >
+            <MapPin className="h-4 w-4" />
+            Abrir en Google Maps
+            <ExternalLink className="h-3.5 w-3.5" />
+          </a>
         </div>
       )}
     </section>
