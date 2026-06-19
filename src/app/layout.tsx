@@ -98,7 +98,7 @@ export default function RootLayout({
                 "https://vm.tiktok.com/ZS9jmxdV4nxRF-KNxhM/",
               ],
               teaches: "Inglés",
-              foundingDate: "2024",
+              foundingDate: "2026",
             }),
           }}
         />

@@ -6,7 +6,8 @@ const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent
 
 const stats = [
   { value: "Sábado", label: "modalidad principal" },
-  { value: "3 niveles", label: "niños, jóvenes y adultos" },
+  { value: "A1 - B2", label: "niveles del MCER" },
+  { value: "Gratis", label: "examen de ubicación" },
 ];
 
 export function HeroSection() {
@@ -56,7 +57,7 @@ export function HeroSection() {
               Conocer más
             </a>
           </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2" data-aos="fade-up" data-aos-delay="400">
+          <div className="mt-10 grid gap-4 sm:grid-cols-3" data-aos="fade-up" data-aos-delay="400">
             {stats.map((item) => (
               <div key={item.label} className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur">
                 <p className="text-2xl font-black text-white">{item.value}</p>
@@ -84,7 +85,7 @@ export function HeroSection() {
           <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/80">Clases sabatinas</p>
-            <p className="mt-1 text-lg font-bold text-white">Niños, jóvenes y adultos</p>
+            <p className="mt-1 text-lg font-bold text-white">Niveles A1, A2, B1 y B2</p>
           </div>
         </div>
       </div>

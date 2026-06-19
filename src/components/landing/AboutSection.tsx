@@ -2,8 +2,8 @@ import Image from "next/image";
 import { BookOpen, GraduationCap, Users } from "lucide-react";
 
 const stats = [
-  { icon: GraduationCap, value: "2024", label: "Fundación", color: "text-primary" },
-  { icon: Users, value: "3", label: "Niveles", color: "text-primary-light" },
+  { icon: GraduationCap, value: "2026", label: "Fundación", color: "text-primary" },
+  { icon: Users, value: "A1-B2", label: "Niveles MCER", color: "text-primary-light" },
   { icon: BookOpen, value: "Sabatino", label: "Modalidad", color: "text-accent" },
 ];
 

@@ -14,11 +14,15 @@ const faqs = [
   },
   {
     pregunta: "¿Qué niveles de inglés ofrecen?",
-    respuesta: "Ofrecemos 3 niveles principales: niños, jóvenes y adultos. Cada nivel está adaptado a las necesidades y ritmo de aprendizaje de cada grupo etario.",
+    respuesta: "Manejamos los niveles A1, A2, B1 y B2 del Marco Común Europeo (MCER), organizados por grupos según la edad y nivel del estudiante.",
+  },
+  {
+    pregunta: "¿Ofrecen examen de ubicación?",
+    respuesta: "Sí, ofrecemos un examen de ubicación completamente gratis y presencial. Con él evaluamos tu nivel actual de inglés para colocarte en el grupo adecuado.",
   },
   {
     pregunta: "¿Cómo puedo realizar el pago de matrícula o mensualidad?",
-    respuesta: "Puedes realizar tus pagos en nuestras instalaciones o a través de transferencia bancaria. Puedes dar seguimiento a tus pagos a través de WhatsApp.",
+    respuesta: "Los pagos se realizan únicamente en nuestras instalaciones en Las Flores, Masaya. Puedes consultar tus recibos y dar seguimiento a través de WhatsApp.",
   },
   {
     pregunta: "¿Dónde están ubicados?",
