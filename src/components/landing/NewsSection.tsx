@@ -17,6 +17,13 @@ const fallbackNoticias: Noticia[] = [
   { id: "f3", titulo: "Comunicado de matrículas 2026", categoria: "Comunicado", createdAt: "2026-05-01" },
 ];
 
+const categoryColors: Record<string, { bg: string; text: string }> = {
+  Noticia: { bg: "bg-primary/10", text: "text-primary" },
+  Evento: { bg: "bg-green-50", text: "text-green-700" },
+  Comunicado: { bg: "bg-accent/15", text: "text-amber-700" },
+  Logro: { bg: "bg-purple-50", text: "text-purple-700" },
+};
+
 export function NewsSection() {
   const [noticias, setNoticias] = useState<Noticia[]>([]);
   const [loading, setLoading] = useState(true);
@@ -74,8 +81,8 @@ export function NewsSection() {
       <div className="mx-auto max-w-6xl px-4">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between" data-aos="fade-up">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#2E5587]">Noticias y anuncios</p>
-            <h2 className="mt-3 font-serif text-3xl font-black text-[#1E3A5F] md:text-4xl">Contenido reciente y relevante.</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Noticias y anuncios</p>
+            <h2 className="mt-3 font-serif text-3xl font-black text-primary md:text-4xl">Contenido reciente y relevante.</h2>
           </div>
           <p className="max-w-xl text-slate-600">Mantente al día con los comunicados, eventos y actividades de nuestra institución.</p>
         </div>
@@ -92,30 +99,33 @@ export function NewsSection() {
                   <div className="mt-3 h-4 w-full rounded bg-slate-200" />
                 </div>
               ))
-            : items.slice(0, 6).map((item, i) => (
-                <article
-                  key={item.id}
-                  className="elc-card overflow-hidden p-6 transition hover:-translate-y-1 hover:shadow-xl"
-                  data-aos="fade-up"
-                  data-aos-delay={i * 80}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#2E5587]">
-                      {item.categoria}
-                    </span>
-                    <span className="text-xs text-slate-500">{formatDate(item.createdAt)}</span>
-                  </div>
-                  <h3 className="mt-5 text-xl font-bold text-slate-900">{item.titulo}</h3>
-                  <p className="mt-3 text-sm leading-7 text-slate-600">
-                    Información institucional, eventos y comunicados para mantener a la comunidad al día.
-                  </p>
-                </article>
-              ))}
+            : items.slice(0, 6).map((item, i) => {
+                const colors = categoryColors[item.categoria] ?? { bg: "bg-slate-100", text: "text-slate-700" };
+                return (
+                  <article
+                    key={item.id}
+                    className="elc-card elc-card-hover overflow-hidden p-6"
+                    data-aos="fade-up"
+                    data-aos-delay={i * 80}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${colors.bg} ${colors.text}`}>
+                        {item.categoria}
+                      </span>
+                      <span className="text-xs text-slate-500">{formatDate(item.createdAt)}</span>
+                    </div>
+                    <h3 className="mt-5 text-xl font-bold text-slate-900">{item.titulo}</h3>
+                    <p className="mt-3 text-sm leading-7 text-slate-600">
+                      Información institucional, eventos y comunicados para mantener a la comunidad al día.
+                    </p>
+                  </article>
+                );
+              })}
         </div>
 
         <div className="mx-auto mt-14 max-w-lg" data-aos="fade-up">
-          <div className="rounded-[28px] border border-slate-200 bg-white p-8 shadow-sm">
-            <h3 className="text-center font-serif text-xl font-bold text-[#1E3A5F]">Déjanos tu comentario</h3>
+          <div className="elc-card p-8 shadow-sm">
+            <h3 className="text-center font-serif text-xl font-bold text-primary">Déjanos tu comentario</h3>
             <p className="mt-2 text-center text-sm text-slate-500">¿Qué opinas de nuestras noticias? Te leemos.</p>
 
             {sent ? (
@@ -131,7 +141,7 @@ export function NewsSection() {
                   value={correo}
                   onChange={(e) => setCorreo(e.target.value)}
                   required
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
                 />
                 <textarea
                   placeholder="Escribe tu comentario..."
@@ -139,13 +149,13 @@ export function NewsSection() {
                   value={mensaje}
                   onChange={(e) => setMensaje(e.target.value)}
                   required
-                  className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                  className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
                 />
                 {error && <p className="text-sm text-red-600">{error}</p>}
                 <button
                   type="submit"
                   disabled={sending}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1E3A5F] px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#2E5587] disabled:opacity-60"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-primary-light disabled:opacity-60"
                 >
                   {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   {sending ? "Enviando..." : "Enviar comentario"}

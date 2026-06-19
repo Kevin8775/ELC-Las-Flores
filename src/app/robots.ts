@@ -11,6 +11,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/dashboard/", "/login"],
       },
     ],
-    sitemap: "https://elclasflores.edu.ni/sitemap.xml",
+    sitemap: "https://elclasflores.netlify.app/sitemap.xml",
   };
 }

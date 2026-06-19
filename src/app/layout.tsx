@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Lato, Merriweather } from "next/font/google";
 import Providers from "./providers";
-import { AOSInit } from "@/components/landing/AOSInit";
 import "./globals.css";
 
 const lato = Lato({
@@ -13,11 +12,11 @@ const lato = Lato({
 const merriweather = Merriweather({
   variable: "--font-merriweather",
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://elclasflores.edu.ni"),
+  metadataBase: new URL("https://elclasflores.netlify.app"),
   title: "ELC Las Flores - Centro de Inglés Sabatino | Las Flores, Masaya",
   description:
     "ELC Las Flores ofrece clases de inglés en modalidad sabatina para niños, jóvenes y adultos. Gestión escolar moderna, pagos en línea y comunicación institucional en Las Flores, Masaya, Nicaragua.",
@@ -27,7 +26,7 @@ export const metadata: Metadata = {
     "inglés adultos", "clases sabatinas",
   ],
   alternates: {
-    canonical: "https://elclasflores.edu.ni",
+    canonical: "https://elclasflores.netlify.app",
   },
   robots: {
     index: true,
@@ -40,7 +39,7 @@ export const metadata: Metadata = {
     title: "ELC Las Flores - Centro de Inglés Sabatino | Las Flores, Masaya",
     description:
       "Formación académica en inglés con modalidad sabatina para niños, jóvenes y adultos en Las Flores, Masaya, Nicaragua.",
-    url: "https://elclasflores.edu.ni",
+    url: "https://elclasflores.netlify.app",
     siteName: "ELC Las Flores",
     locale: "es_NI",
     type: "website",
@@ -78,7 +77,7 @@ export default function RootLayout({
               "@type": "EducationalOrganization",
               name: "ELC Las Flores - The English Language Center",
               description: "Centro de enseñanza del idioma inglés con modalidad sabatina para niños, jóvenes y adultos en Las Flores, Masaya, Nicaragua.",
-              url: "https://elclasflores.edu.ni",
+              url: "https://elclasflores.netlify.app",
               telephone: "+50578421018",
               email: "contacto@elclasflores.edu.ni",
               logo: "https://elclasflores.netlify.app/LogoELCLFM.png",
@@ -105,7 +104,6 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <AOSInit />
         <Providers>{children}</Providers>
       </body>
     </html>

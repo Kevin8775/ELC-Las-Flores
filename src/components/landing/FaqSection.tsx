@@ -34,7 +34,7 @@ export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="mx-auto max-w-6xl px-4 py-16">
+    <section id="faq" className="elc-section-alt mx-auto max-w-6xl px-4 py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -53,8 +53,8 @@ export function FaqSection() {
         }}
       />
       <div className="text-center" data-aos="fade-up">
-        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#2E5587]">Preguntas frecuentes</p>
-        <h2 className="mt-3 font-serif text-3xl font-black text-[#1E3A5F] md:text-4xl">Resolvemos tus dudas</h2>
+        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Preguntas frecuentes</p>
+        <h2 className="mt-3 font-serif text-3xl font-black text-primary md:text-4xl">Resolvemos tus dudas</h2>
       </div>
 
       <div className="mx-auto mt-10 max-w-3xl space-y-3" data-aos="fade-up" data-aos-delay="100">
@@ -63,7 +63,7 @@ export function FaqSection() {
           return (
             <div
               key={i}
-              className={`rounded-2xl border border-slate-200 bg-white transition-shadow ${isOpen ? "shadow-md" : "shadow-sm"}`}
+              className={`elc-card overflow-hidden transition-shadow ${isOpen ? "shadow-md" : "shadow-sm"}`}
             >
               <button
                 type="button"
@@ -73,14 +73,18 @@ export function FaqSection() {
               >
                 <span className="text-sm font-semibold text-slate-900 md:text-base">{faq.pregunta}</span>
                 <ChevronDown
-                  className={`h-5 w-5 shrink-0 text-slate-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                  className={`h-5 w-5 shrink-0 text-slate-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
                 />
               </button>
-              {isOpen && (
+              <div
+                className={`overflow-hidden transition-all duration-300 ease-out ${
+                  isOpen ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
                 <div className="px-6 pb-5">
                   <p className="text-sm leading-7 text-slate-600">{faq.respuesta}</p>
                 </div>
-              )}
+              </div>
             </div>
           );
         })}

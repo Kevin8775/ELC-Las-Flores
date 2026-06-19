@@ -1,5 +1,3 @@
-import { Globe } from "lucide-react";
-
 function FacebookIcon({ className }: { className?: string }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -17,13 +15,13 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 const socialLinks = [
-  { icon: FacebookIcon, href: "https://www.facebook.com/profile.php?id=100063896447056", label: "Facebook" },
-  { icon: TikTokIcon, href: "https://vm.tiktok.com/ZS9jmxdV4nxRF-KNxhM/", label: "TikTok" },
+  { icon: FacebookIcon, href: "https://www.facebook.com/profile.php?id=100063896447056", label: "Facebook", hoverBg: "hover:bg-[#1877f2]/15", hoverText: "hover:text-[#1877f2]" },
+  { icon: TikTokIcon, href: "https://vm.tiktok.com/ZS9jmxdV4nxRF-KNxhM/", label: "TikTok", hoverBg: "hover:bg-black/10", hoverText: "hover:text-black" },
 ];
 
 export function SocialSection() {
   return (
-    <section className="bg-[#1E3A5F] py-16">
+    <section className="bg-primary py-16">
       <div className="mx-auto max-w-6xl px-4 text-center">
         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/60" data-aos="fade-up">
           Redes sociales
@@ -43,7 +41,7 @@ export function SocialSection() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20 hover:-translate-y-0.5"
+                className={`inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition ${link.hoverBg} ${link.hoverText} hover:-translate-y-0.5`}
               >
                 <Icon className="h-5 w-5" />
                 {link.label}

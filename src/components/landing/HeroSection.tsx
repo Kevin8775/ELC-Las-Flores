@@ -13,18 +13,21 @@ export function HeroSection() {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(30,58,95,0.98),rgba(46,85,135,0.92))]" />
-      <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-[#F4C430]/25 blur-3xl" />
+      <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-accent/25 blur-3xl" />
+      <div className="absolute right-0 bottom-0 h-48 w-48 translate-x-1/4 translate-y-1/4 rounded-full bg-accent/10 blur-3xl" />
+      <div className="absolute left-0 top-1/2 h-32 w-32 -translate-x-1/4 -translate-y-1/4 rounded-full bg-white/5 blur-2xl" />
+
       <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-20 text-white lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:py-24">
         <div>
           <div
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-white/85 backdrop-blur"
             data-aos="fade-up"
           >
-            <Sparkles className="h-4 w-4 text-[#F4C430]" />
+            <Sparkles className="h-4 w-4 text-accent" />
             Turno sabatino con visión moderna
           </div>
           <h1
-            className="animate-gradient-text max-w-3xl bg-[linear-gradient(to_right,#ffffff,#c4d9f0,#ffffff,#a0c4e8,#ffffff)] bg-[length:200%_auto] bg-clip-text font-serif text-4xl font-black leading-tight text-transparent md:text-6xl"
+            className="elc-gradient-text max-w-3xl font-serif text-4xl font-black leading-tight md:text-6xl"
             data-aos="fade-up"
             data-aos-delay="100"
           >
@@ -42,7 +45,7 @@ export function HeroSection() {
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-[#F4C430] px-6 py-3.5 font-semibold text-[#1E3A5F] shadow-xl shadow-[#F4C430]/20 transition hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 font-semibold text-primary shadow-xl shadow-accent/20 transition hover:-translate-y-0.5"
             >
               Inscribirse ahora <ArrowRight className="h-4 w-4" />
             </a>
@@ -69,7 +72,7 @@ export function HeroSection() {
           data-aos-delay="200"
         >
           <div className="rounded-[24px] bg-white p-6 text-slate-900">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#2E5587]">Agenda destacada</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Agenda destacada</p>
             <div className="mt-5 space-y-4">
               <div className="rounded-2xl bg-slate-50 p-4">
                 <p className="text-xs font-semibold uppercase text-slate-500">Próxima actividad</p>
@@ -78,12 +81,12 @@ export function HeroSection() {
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl border border-slate-200 p-4">
-                  <CalendarDays className="h-5 w-5 text-[#1E3A5F]" />
+                  <CalendarDays className="h-5 w-5 text-primary" />
                   <p className="mt-3 text-sm font-semibold text-slate-900">Sábados</p>
                   <p className="text-sm text-slate-600">Modalidad principal</p>
                 </div>
                 <div className="rounded-2xl border border-slate-200 p-4">
-                  <CheckCircle2 className="h-5 w-5 text-[#1E3A5F]" />
+                  <CheckCircle2 className="h-5 w-5 text-primary" />
                   <p className="mt-3 text-sm font-semibold text-slate-900">Procesos claros</p>
                   <p className="text-sm text-slate-600">Pagos, reportes y noticias</p>
                 </div>

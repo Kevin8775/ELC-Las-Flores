@@ -1,3 +1,4 @@
+import { AOSInit } from "@/components/landing/AOSInit";
 import { LandingHeader } from "@/components/landing/LandingHeader";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { AboutSection } from "@/components/landing/AboutSection";
@@ -14,6 +15,7 @@ import { LandingCarousel } from "@/components/home/LandingCarousel";
 export default function Home() {
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(244,196,48,0.18),transparent_32%),linear-gradient(180deg,#f8fbff_0%,#eef4fb_100%)] text-slate-900">
+      <AOSInit />
       <LandingHeader />
       <main>
         <HeroSection />

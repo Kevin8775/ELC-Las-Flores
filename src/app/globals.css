@@ -7,30 +7,56 @@
   --primary-light: #2e5587;
   --accent: #f4c430;
   --accent-light: #f9dc7a;
+  --whatsapp: #25d366;
+  --whatsapp-dark: #20bd5a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-dark: var(--whatsapp-dark);
   --font-sans: var(--font-lato);
   --font-serif: var(--font-merriweather);
+
   --animate-gradient: gradient 6s linear infinite;
   --animate-pulse-subtle: pulse-subtle 2s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.5s ease-out both;
+  --animate-slide-up: slide-up 0.5s ease-out both;
+  --animate-slide-down: slide-down 0.3s ease-out both;
+  --animate-scale-in: scale-in 0.2s ease-out both;
 
   @keyframes gradient {
-    to {
-      background-position: 200% center;
-    }
+    to { background-position: 200% center; }
   }
 
   @keyframes pulse-subtle {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.85;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slide-down {
+    from { opacity: 0; max-height: 0; }
+    to { opacity: 1; max-height: 500px; }
+  }
+
+  @keyframes scale-in {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
   }
 }
 
@@ -44,12 +70,30 @@ html {
   scroll-behavior: smooth;
 }
 
-.elc-gradient {
-  background: linear-gradient(120deg, var(--primary), var(--primary-light));
-}
-
 .elc-card {
   border: 1px solid rgb(226 232 240 / 0.9);
   border-radius: 1.25rem;
   background: white;
+}
+
+.elc-card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.elc-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px -8px rgb(30 58 95 / 0.15);
+  border-color: rgb(30 58 95 / 0.15);
+}
+
+.elc-gradient-text {
+  background: linear-gradient(to right, #ffffff, #c4d9f0, #ffffff, #a0c4e8, #ffffff);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient 6s linear infinite;
+}
+
+.elc-section-alt {
+  background: linear-gradient(180deg, #f0f6ff 0%, #f8fbff 100%);
 }

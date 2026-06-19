@@ -78,8 +78,8 @@ export function TestimonialsSection() {
     <section id="testimonios" className="bg-white py-16">
       <div className="mx-auto max-w-6xl px-4">
         <div className="text-center" data-aos="fade-up">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#2E5587]">Testimonios</p>
-          <h2 className="mt-3 font-serif text-3xl font-black text-[#1E3A5F] md:text-4xl">Lo que dicen nuestros estudiantes</h2>
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Testimonios</p>
+          <h2 className="mt-3 font-serif text-3xl font-black text-primary md:text-4xl">Lo que dicen nuestros estudiantes</h2>
         </div>
 
         <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -100,14 +100,15 @@ export function TestimonialsSection() {
             : items.map((item, i) => (
                 <article
                   key={item.id}
-                  className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                  className="elc-card relative overflow-hidden p-6 transition hover:-translate-y-1 hover:shadow-xl"
                   data-aos="fade-up"
                   data-aos-delay={i * 100}
                 >
-                  <Quote className="h-8 w-8 text-[#1E3A5F]/20" />
+                  <div className="absolute left-0 top-0 h-full w-1 rounded-l-[28px] bg-gradient-to-b from-primary to-primary-light" />
+                  <Quote className="h-8 w-8 text-primary/15" />
                   <p className="mt-4 leading-7 text-slate-600">&ldquo;{item.texto}&rdquo;</p>
                   <div className="mt-6 flex items-center gap-3 border-t border-slate-100 pt-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1E3A5F]/10 text-sm font-bold text-[#1E3A5F]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-light text-sm font-bold text-white">
                       {item.nombre.charAt(0)}
                     </div>
                     <div>
@@ -120,8 +121,8 @@ export function TestimonialsSection() {
         </div>
 
         <div className="mx-auto mt-14 max-w-lg" data-aos="fade-up">
-          <div className="rounded-[28px] border border-slate-200 bg-white p-8 shadow-sm">
-            <h3 className="text-center font-serif text-xl font-bold text-[#1E3A5F]">Comparte tu experiencia</h3>
+          <div className="elc-card p-8 shadow-sm">
+            <h3 className="text-center font-serif text-xl font-bold text-primary">Comparte tu experiencia</h3>
             <p className="mt-2 text-center text-sm text-slate-500">Tu opinión ayuda a otros a conocer nuestra institución.</p>
 
             {sent ? (
@@ -137,7 +138,7 @@ export function TestimonialsSection() {
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
                   required
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
                 />
                 <textarea
                   placeholder="Escribe tu experiencia..."
@@ -145,20 +146,20 @@ export function TestimonialsSection() {
                   value={texto}
                   onChange={(e) => setTexto(e.target.value)}
                   required
-                  className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                  className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
                 />
                 <input
                   type="text"
                   placeholder="Tu rol (ej: Madre de familia, Estudiante) — opcional"
                   value={rol}
                   onChange={(e) => setRol(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
                 />
                 {error && <p className="text-sm text-red-600">{error}</p>}
                 <button
                   type="submit"
                   disabled={sending}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1E3A5F] px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#2E5587] disabled:opacity-60"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-primary-light disabled:opacity-60"
                 >
                   {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   {sending ? "Enviando..." : "Enviar testimonio"}
