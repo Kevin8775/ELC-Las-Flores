@@ -85,9 +85,17 @@ export function LandingCarousel() {
               >
                 <Image
                   src={slide.src}
+                  alt=""
+                  fill
+                  className="object-cover blur-xl scale-110 opacity-60"
+                  aria-hidden
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                />
+                <Image
+                  src={slide.src}
                   alt={slide.alt}
                   fill
-                  className="object-cover"
+                  className="object-contain p-4"
                   priority={i === 0}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
                 />

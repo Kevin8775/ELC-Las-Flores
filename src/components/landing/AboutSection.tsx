@@ -14,7 +14,7 @@ export function AboutSection() {
         <h2 className="mt-3 font-serif text-3xl font-black text-primary md:text-4xl">
           Una presencia institucional más clara y directa.
         </h2>
-        <div className="mt-8 grid grid-cols-3 gap-4">
+        <div className="mt-8 grid grid-cols-3 gap-6">
           {stats.map((item) => {
             const Icon = item.icon;
             return (
@@ -26,7 +26,7 @@ export function AboutSection() {
             );
           })}
         </div>
-        <div className="elc-card relative overflow-hidden p-8 shadow-sm" data-aos="fade-up" data-aos-delay="100">
+        <div className="elc-card relative mt-12 overflow-hidden p-10 shadow-sm" data-aos="fade-up" data-aos-delay="100">
           <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-primary/5 blur-2xl" />
           <p className="relative max-w-3xl text-lg leading-8 text-slate-700">
             ELC Las Flores impulsa el aprendizaje del idioma inglés con enfoque práctico, disciplina académica y acompañamiento a estudiantes y tutores.
