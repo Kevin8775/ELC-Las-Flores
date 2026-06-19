@@ -55,7 +55,7 @@ export function LandingCarousel() {
 
   return (
     <section
-      className="mx-auto max-w-6xl px-4 pb-4"
+      className="mx-auto max-w-6xl px-4 pt-8 pb-4 md:pt-12"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
