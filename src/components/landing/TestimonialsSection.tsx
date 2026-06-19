@@ -11,26 +11,7 @@ type Testimonial = {
   rol?: string;
 };
 
-const fallbackTestimonials: Testimonial[] = [
-  {
-    id: "1",
-    nombre: "María G.",
-    texto: "Excelente centro de inglés. Mi hijo ha mejorado muchísimo su pronunciación y confianza al hablar. Los maestros son muy dedicados.",
-    rol: "Madre de familia",
-  },
-  {
-    id: "2",
-    nombre: "Carlos M.",
-    texto: "Tomé el curso para adultos y la metodología es muy práctica. Aprendí inglés conversacional rápido, ideal para mi trabajo.",
-    rol: "Estudiante nivel adultos",
-  },
-  {
-    id: "3",
-    nombre: "Ana L.",
-    texto: "El ambiente es muy acogedor y el horario sabatino es perfecto para quienes trabajamos entre semana. Altamente recomendado.",
-    rol: "Estudiante nivel jóvenes",
-  },
-];
+
 
 export function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -45,7 +26,7 @@ export function TestimonialsSection() {
   useEffect(() => {
     api<{ testimonios: Testimonial[] }>("/testimonios")
       .then((data) => setTestimonials(data.testimonios))
-      .catch(() => setTestimonials(fallbackTestimonials))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
@@ -72,7 +53,7 @@ export function TestimonialsSection() {
     }
   };
 
-  const items = testimonials.length > 0 ? testimonials : fallbackTestimonials;
+  const items = testimonials;
 
   return (
     <section id="testimonios" className="bg-white py-16">
@@ -97,6 +78,8 @@ export function TestimonialsSection() {
                   </div>
                 </div>
               ))
+            : items.length === 0
+            ? <p className="col-span-full py-8 text-center text-sm text-slate-400">Aún no hay testimonios publicados.</p>
             : items.map((item, i) => (
                 <article
                   key={item.id}

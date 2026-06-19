@@ -11,11 +11,7 @@ type Noticia = {
   createdAt: string;
 };
 
-const fallbackNoticias: Noticia[] = [
-  { id: "f1", titulo: "Inicio de clases sabatinas", categoria: "Noticia", createdAt: "2026-05-10" },
-  { id: "f2", titulo: "Concurso de spelling bee", categoria: "Evento", createdAt: "2026-06-07" },
-  { id: "f3", titulo: "Comunicado de matrículas 2026", categoria: "Comunicado", createdAt: "2026-05-01" },
-];
+
 
 const categoryColors: Record<string, { bg: string; text: string }> = {
   Noticia: { bg: "bg-primary/10", text: "text-primary" },
@@ -36,7 +32,7 @@ export function NewsSection() {
   useEffect(() => {
     api<{ noticias: Noticia[] }>("/noticias")
       .then((data) => setNoticias(data.noticias))
-      .catch(() => setNoticias(fallbackNoticias))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
@@ -74,7 +70,7 @@ export function NewsSection() {
     }
   };
 
-  const items = noticias.length > 0 ? noticias : fallbackNoticias;
+  const items = noticias;
 
   return (
     <section id="noticias" className="bg-white py-16">
@@ -99,6 +95,8 @@ export function NewsSection() {
                   <div className="mt-3 h-4 w-full rounded bg-slate-200" />
                 </div>
               ))
+            : items.length === 0
+            ? <p className="col-span-full py-8 text-center text-sm text-slate-400">Aún no hay noticias publicadas.</p>
             : items.slice(0, 6).map((item, i) => {
                 const colors = categoryColors[item.categoria] ?? { bg: "bg-slate-100", text: "text-slate-700" };
                 return (
