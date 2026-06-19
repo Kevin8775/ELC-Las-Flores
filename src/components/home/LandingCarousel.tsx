@@ -79,9 +79,21 @@ export function LandingCarousel() {
   };
 
   return (
-    <section className="mx-auto max-w-6xl px-4 pt-8 pb-4 md:pt-12">
+    <section className="relative pt-8 pb-4 md:pt-12">
+      {/* Blurred background — full width */}
+      <div className="absolute inset-0 overflow-hidden">
+        <Image
+          src={slides[activeIndex].src}
+          alt=""
+          fill
+          className="scale-125 object-cover opacity-15 blur-3xl transition-all duration-700"
+          aria-hidden
+          sizes="100vw"
+        />
+      </div>
+
       <div
-        className="group relative mx-auto max-w-6xl"
+        className="group relative px-4"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         onTouchStart={handleTouchStart}
@@ -91,21 +103,12 @@ export function LandingCarousel() {
         aria-roledescription="carrusel"
         aria-label="Galería de imágenes institucionales"
       >
-        {/* Blurred background */}
-        <div className="absolute inset-0 overflow-hidden rounded-3xl">
-          <Image
-            src={slides[activeIndex].src}
-            alt=""
-            fill
-            className="scale-125 object-cover opacity-20 blur-2xl transition-all duration-700"
-            aria-hidden
-            sizes="100vw"
-          />
-        </div>
-
-        {/* Coverflow container */}
-        <div className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-white/5 backdrop-blur-sm" style={{ perspective: "1200px" }}>
-          <div className="relative flex items-center justify-center" style={{ height: "clamp(260px, 45vw, 500px)" }}>
+        {/* Coverflow container — no overflow clipping */}
+        <div className="relative" style={{ perspective: "1200px" }}>
+          <div
+            className="relative flex items-center justify-center"
+            style={{ height: "clamp(280px, 50vw, 580px)" }}
+          >
             {slides.map((slide, i) => {
               const offset = i - activeIndex;
               const absOffset = Math.abs(offset);
@@ -120,16 +123,16 @@ export function LandingCarousel() {
                   key={slide.src}
                   className="coverflow-card absolute left-1/2 top-1/2"
                   style={{
-                    width: "clamp(220px, 42vw, 520px)",
+                    width: "clamp(260px, 75vw, 900px)",
                     aspectRatio: "16/10",
                     transform: `
-                      translate(calc(-50% + ${offset * 35}%), -50%)
-                      scale(${1 - absOffset * 0.2})
-                      rotateY(${sign * 20}deg)
+                      translate(calc(-50% + ${offset * 18}%), -50%)
+                      scale(${1 - absOffset * 0.15})
+                      rotateY(${sign * 25}deg)
                     `,
-                    opacity: 1 - absOffset * 0.35,
+                    opacity: 1 - absOffset * 0.3,
                     zIndex: 10 - absOffset,
-                    filter: isActive ? "none" : "blur(1.5px)",
+                    filter: isActive ? "none" : "blur(1px)",
                     pointerEvents: isActive ? "auto" : "none",
                   }}
                   role="group"
@@ -141,11 +144,13 @@ export function LandingCarousel() {
                     src={slide.src}
                     alt={slide.alt}
                     fill
-                    className={`rounded-2xl object-cover shadow-2xl transition-shadow duration-500 ${
-                      isActive ? "shadow-slate-900/20" : "shadow-slate-900/10"
+                    className={`rounded-3xl object-cover transition-shadow duration-500 ${
+                      isActive
+                        ? "shadow-2xl shadow-slate-900/25"
+                        : "shadow-xl shadow-slate-900/10"
                     }`}
                     priority={i === 0}
-                    sizes="(max-width: 768px) 55vw, (max-width: 1200px) 42vw, 520px"
+                    sizes="(max-width: 768px) 75vw, 900px"
                   />
                 </div>
               );
@@ -157,7 +162,7 @@ export function LandingCarousel() {
         <button
           type="button"
           onClick={prev}
-          className="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-lg shadow-slate-900/10 opacity-0 backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl group-hover:opacity-100"
+          className="absolute left-4 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-lg shadow-slate-900/10 opacity-0 backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl group-hover:opacity-100"
           aria-label="Imagen anterior"
         >
           <ChevronLeft className="h-5 w-5" />
@@ -165,14 +170,14 @@ export function LandingCarousel() {
         <button
           type="button"
           onClick={next}
-          className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-lg shadow-slate-900/10 opacity-0 backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl group-hover:opacity-100"
+          className="absolute right-4 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-lg shadow-slate-900/10 opacity-0 backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl group-hover:opacity-100"
           aria-label="Imagen siguiente"
         >
           <ChevronRight className="h-5 w-5" />
         </button>
 
         {/* Dot indicators */}
-        <div className="relative z-20 mt-4 flex items-center justify-center gap-2">
+        <div className="relative z-20 mt-6 flex items-center justify-center gap-2.5">
           {slides.map((slide, i) => (
             <button
               key={slide.src}
@@ -181,7 +186,7 @@ export function LandingCarousel() {
               aria-current={i === activeIndex ? "true" : undefined}
               onClick={() => goTo(i)}
               className={`h-2.5 rounded-full transition-all duration-300 ${
-                i === activeIndex ? "w-8 bg-primary" : "w-2.5 bg-slate-300 hover:bg-slate-400"
+                i === activeIndex ? "w-9 bg-primary" : "w-2.5 bg-slate-300 hover:bg-slate-400"
               }`}
             />
           ))}
