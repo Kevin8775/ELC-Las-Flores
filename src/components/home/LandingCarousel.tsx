@@ -105,7 +105,7 @@ export function LandingCarousel() {
 
         {/* Coverflow container */}
         <div className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-white/5 backdrop-blur-sm" style={{ perspective: "1200px" }}>
-          <div className="relative flex items-center justify-center" style={{ height: "clamp(220px, 40vw, 420px)" }}>
+          <div className="relative flex items-center justify-center" style={{ height: "clamp(260px, 45vw, 500px)" }}>
             {slides.map((slide, i) => {
               const offset = i - activeIndex;
               const absOffset = Math.abs(offset);
@@ -120,10 +120,10 @@ export function LandingCarousel() {
                   key={slide.src}
                   className="coverflow-card absolute left-1/2 top-1/2"
                   style={{
-                    width: "clamp(180px, 35vw, 420px)",
+                    width: "clamp(220px, 42vw, 520px)",
                     aspectRatio: "16/10",
                     transform: `
-                      translate(calc(-50% + ${offset * 45}%), -50%)
+                      translate(calc(-50% + ${offset * 35}%), -50%)
                       scale(${1 - absOffset * 0.2})
                       rotateY(${sign * 20}deg)
                     `,
@@ -145,7 +145,7 @@ export function LandingCarousel() {
                       isActive ? "shadow-slate-900/20" : "shadow-slate-900/10"
                     }`}
                     priority={i === 0}
-                    sizes="(max-width: 768px) 55vw, (max-width: 1200px) 35vw, 420px"
+                    sizes="(max-width: 768px) 55vw, (max-width: 1200px) 42vw, 520px"
                   />
                 </div>
               );
