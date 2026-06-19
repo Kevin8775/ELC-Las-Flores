@@ -78,7 +78,7 @@ export function NewsSection() {
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between" data-aos="fade-up">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Noticias y anuncios</p>
-            <h2 className="mt-3 font-serif text-3xl font-black text-primary md:text-4xl">Contenido reciente y relevante</h2>
+            <h2 className="mt-3 font-serif text-3xl font-black text-primary md:text-4xl">Noticias y novedades</h2>
           </div>
           <p className="max-w-xl text-slate-500">Mantente al día con los comunicados, eventos y actividades de nuestra institución.</p>
         </div>

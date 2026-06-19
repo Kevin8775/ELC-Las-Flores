@@ -14,13 +14,13 @@ export function AboutSection() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Sobre nosotros</p>
             <h2 className="mt-3 font-serif text-3xl font-black leading-tight text-primary md:text-4xl">
-              Una presencia institucional más clara y directa.
+              El inglés que abre puertas, el acompañamiento que necesitas.
             </h2>
             <p className="mt-6 text-base leading-7 text-slate-600">
-              ELC Las Flores impulsa el aprendizaje del idioma inglés con enfoque práctico, disciplina académica y acompañamiento a estudiantes y tutores.
+              ELC Las Flores combina excelencia académica y un acompañamiento cercano para guiarte paso a paso en tu aprendizaje.
             </p>
             <div className="mt-8 flex flex-wrap gap-2">
-              {["Práctico", "Disciplinado", "Cercano"].map((tag) => (
+              {["Excelencia", "Acompañamiento", "Global"].map((tag) => (
                 <span key={tag} className="rounded-full bg-primary/8 px-3.5 py-1.5 text-xs font-semibold text-primary">
                   {tag}
                 </span>

@@ -18,10 +18,10 @@ export function FooterContactSection() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/50">Contacto</p>
             <h2 className="mt-3 font-serif text-3xl font-black text-white leading-tight md:text-4xl">
-              ¿Listo para empezar tu aprendizaje?
+              Tu futuro te espera. ¿Estás listo?
             </h2>
             <p className="mt-4 max-w-md text-white/60">
-              Contáctanos por WhatsApp y te guiaremos en el proceso de inscripción. Clases sabatinas para niños, jóvenes y adultos.
+              Da el primer paso hacia un futuro sin fronteras. Contáctanos y te guiaremos en todo el proceso.
             </p>
             <a
               href={WHATSAPP_URL}

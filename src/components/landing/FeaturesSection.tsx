@@ -4,15 +4,15 @@ const features = [
   {
     icon: Users2,
     title: "Acompañamiento humano",
-    text: "Seguimiento cercano para estudiantes y tutores en cada etapa del aprendizaje.",
+    text: "Te guiamos paso a paso con atención personalizada para que alcances tus metas.",
     border: "border-t-primary",
     iconBg: "from-primary to-primary-light",
     iconShadow: "shadow-primary/20",
   },
   {
     icon: Globe2,
-    title: "Inglés práctico",
-    text: "Enfoque real en conversación, comprensión y uso del idioma en contextos cotidianos.",
+    title: "Inglés para el mundo",
+    text: "Desarrolla habilidades reales de comunicación para conectar con oportunidades internacionales.",
     border: "border-t-accent",
     iconBg: "from-accent to-amber-500",
     iconShadow: "shadow-accent/20",

@@ -18,7 +18,7 @@ export function LandingFooter() {
               </div>
             </div>
             <p className="mt-4 max-w-xs text-sm leading-6 text-slate-500">
-              Centro de enseñanza del idioma inglés con modalidad sabatina en Las Flores, Masaya, Nicaragua.
+              Aprende inglés con excelencia académica y acompañamiento cercano. Las Flores, Masaya, Nicaragua.
             </p>
           </div>
 

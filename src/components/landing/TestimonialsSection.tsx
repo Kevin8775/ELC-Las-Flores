@@ -71,7 +71,7 @@ export function TestimonialsSection() {
       <div className="relative mx-auto max-w-6xl px-4">
         <div className="text-center" data-aos="fade-up">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Testimonios</p>
-          <h2 className="mt-3 font-serif text-3xl font-black text-primary md:text-4xl">Lo que dicen nuestros estudiantes</h2>
+          <h2 className="mt-3 font-serif text-3xl font-black text-primary md:text-4xl">Lo que dicen de nosotros</h2>
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">

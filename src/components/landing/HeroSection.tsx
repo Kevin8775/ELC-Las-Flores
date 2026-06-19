@@ -31,15 +31,15 @@ export function HeroSection() {
             data-aos="fade-up"
             data-aos-delay="100"
           >
-            Inglés con una experiencia escolar{" "}
-            <span className="elc-gradient-text">más clara y organizada.</span>
+            Tu futuro no tiene fronteras.{" "}
+            <span className="elc-gradient-text">Aprende inglés en ELC Las Flores.</span>
           </h1>
           <p
             className="mx-auto mt-7 max-w-2xl text-base leading-7 text-white/65 md:text-lg"
             data-aos="fade-up"
             data-aos-delay="200"
           >
-            ELC Las Flores combina formación académica con acompañamiento cercano para estudiantes, familias y docentes.
+            Aprende inglés en ELC Las Flores y construye las herramientas que necesitas para comunicarte con el mundo.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="300">
             <a

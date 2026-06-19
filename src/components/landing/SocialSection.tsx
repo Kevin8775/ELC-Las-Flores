@@ -22,7 +22,7 @@ export function SocialSection() {
           Conéctate con nosotros
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-white/55" data-aos="fade-up" data-aos-delay="150">
-          Síguenos en nuestras redes sociales para estar al tanto de eventos, comunicados y contenido educativo.
+          Forma parte de nuestra comunidad y descubre contenido que impulsa tu aprendizaje.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
           {socialLinks.map((link) => {
