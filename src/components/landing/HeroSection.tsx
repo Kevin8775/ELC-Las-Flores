@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const WHATSAPP_NUMBER = "50578421018";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("¡Hola! Quiero inscribirme en ELC Las Flores.")}`;
@@ -19,13 +19,6 @@ export function HeroSection() {
 
       <div className="relative mx-auto max-w-6xl px-4 py-20 text-white lg:py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <div
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-white/85 backdrop-blur"
-            data-aos="fade-up"
-          >
-            <Sparkles className="h-4 w-4 text-accent" />
-            Turno sabatino
-          </div>
           <h1
             className="elc-gradient-text font-serif text-4xl font-black leading-tight md:text-6xl"
             data-aos="fade-up"
