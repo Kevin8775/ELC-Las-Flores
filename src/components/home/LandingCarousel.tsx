@@ -81,7 +81,7 @@ export function LandingCarousel() {
   return (
     <section className="mx-auto max-w-6xl px-4 pt-8 pb-4 md:pt-12">
       <div
-        className="group relative mx-auto max-w-4xl"
+        className="group relative mx-auto max-w-6xl"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         onTouchStart={handleTouchStart}
@@ -123,7 +123,7 @@ export function LandingCarousel() {
                     width: "clamp(180px, 35vw, 420px)",
                     aspectRatio: "16/10",
                     transform: `
-                      translate(calc(-50% + ${offset * 52}%), -50%)
+                      translate(calc(-50% + ${offset * 45}%), -50%)
                       scale(${1 - absOffset * 0.2})
                       rotateY(${sign * 20}deg)
                     `,
