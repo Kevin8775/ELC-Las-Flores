@@ -8,7 +8,7 @@ const stats = [
 
 export function AboutSection() {
   return (
-    <section className="bg-[#f0f6ff] py-20" id="sobre">
+    <section className="elc-section-alt py-20" id="sobre">
       <div className="mx-auto max-w-6xl px-4">
         <div className="grid items-center gap-12 lg:grid-cols-2" data-aos="fade-up">
           <div>

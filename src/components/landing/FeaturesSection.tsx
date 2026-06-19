@@ -29,8 +29,8 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="relative bg-white py-20">
-      <div className="absolute inset-0 elc-grid-pattern" />
+    <section className="elc-section-alt relative py-20">
+      <div className="elc-grid-pattern absolute inset-0" />
       <div className="relative mx-auto max-w-6xl px-4">
         <div className="text-center" data-aos="fade-up">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">¿Por qué ELC?</p>

@@ -11,7 +11,6 @@ import { FooterContactSection } from "@/components/landing/FooterContactSection"
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { BackToTop } from "@/components/landing/BackToTop";
 import { LandingCarousel } from "@/components/home/LandingCarousel";
-import { WaveDivider } from "@/components/landing/WaveDivider";
 
 export default function Home() {
   return (
@@ -20,9 +19,7 @@ export default function Home() {
       <LandingHeader />
       <main>
         <HeroSection />
-        <WaveDivider fill="#ffffff" />
         <LandingCarousel />
-        <WaveDivider fill="#f0f6ff" flip />
         <AboutSection />
         <FeaturesSection />
         <TestimonialsSection />
