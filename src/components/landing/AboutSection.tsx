@@ -13,7 +13,7 @@ export function AboutSection() {
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Sobre nosotros</p>
           <h2 className="mt-3 font-serif text-3xl font-black text-primary md:text-4xl">
-            Una presencia institucional más limpia y actual.
+            Una presencia institucional más clara y directa.
           </h2>
           <div className="mt-8 grid grid-cols-3 gap-4">
             {stats.map((item) => {
@@ -31,10 +31,10 @@ export function AboutSection() {
         <div className="elc-card relative overflow-hidden p-8 shadow-sm">
           <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-primary/5 blur-2xl" />
           <p className="relative max-w-3xl text-lg leading-8 text-slate-700">
-            ELC Las Flores impulsa el aprendizaje del idioma inglés con enfoque práctico, disciplina académica y acompañamiento a estudiantes y tutores, ahora con una experiencia visual más moderna y ordenada.
+            ELC Las Flores impulsa el aprendizaje del idioma inglés con enfoque práctico, disciplina académica y acompañamiento a estudiantes y tutores.
           </p>
           <div className="relative mt-6 flex flex-wrap gap-2">
-            {["Práctico", "Disciplinado", "Moderno", "Confiable"].map((tag) => (
+            {["Práctico", "Disciplinado"].map((tag) => (
               <span key={tag} className="rounded-full bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
                 {tag}
               </span>

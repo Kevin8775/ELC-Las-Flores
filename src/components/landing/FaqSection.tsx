@@ -18,7 +18,7 @@ const faqs = [
   },
   {
     pregunta: "¿Cómo puedo realizar el pago de matrícula o mensualidad?",
-    respuesta: "Puedes realizar tus pagos en nuestras instalaciones o a través de transferencia bancaria. Todo el proceso está respaldado por nuestro sistema de gestión escolar que te permite dar seguimiento a tus pagos.",
+    respuesta: "Puedes realizar tus pagos en nuestras instalaciones o a través de transferencia bancaria. Puedes dar seguimiento a tus pagos a través de WhatsApp.",
   },
   {
     pregunta: "¿Dónde están ubicados?",
@@ -26,7 +26,7 @@ const faqs = [
   },
   {
     pregunta: "¿Ofrecen clases en línea o solo presenciales?",
-    respuesta: "Actualmente nuestra modalidad es presencial sabatina. Sin embargo, complementamos la enseñanza con recursos digitales y comunicación constante a través de nuestra plataforma.",
+    respuesta: "Actualmente nuestra modalidad es presencial sabatina. Sin embargo, complementamos la enseñanza con recursos digitales y comunicación constante a través de WhatsApp.",
   },
 ];
 

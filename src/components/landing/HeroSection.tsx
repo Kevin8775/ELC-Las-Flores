@@ -6,7 +6,6 @@ const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent
 const stats = [
   { value: "Sábado", label: "modalidad principal" },
   { value: "3 niveles", label: "niños, jóvenes y adultos" },
-  { value: "1 sistema", label: "para gestión escolar" },
 ];
 
 export function HeroSection() {
@@ -24,21 +23,21 @@ export function HeroSection() {
             data-aos="fade-up"
           >
             <Sparkles className="h-4 w-4 text-accent" />
-            Turno sabatino con visión moderna
+            Turno sabatino
           </div>
           <h1
             className="elc-gradient-text max-w-3xl font-serif text-4xl font-black leading-tight md:text-6xl"
             data-aos="fade-up"
             data-aos-delay="100"
           >
-            Inglés con una experiencia escolar más clara, moderna y confiable.
+            Inglés con una experiencia escolar más clara y organizada.
           </h1>
           <p
             className="mt-6 max-w-2xl text-base leading-7 text-slate-200 md:text-lg"
             data-aos="fade-up"
             data-aos-delay="200"
           >
-            ELC Las Flores combina formación académica, comunicación institucional y gestión escolar en una plataforma pensada para estudiantes, familias y docentes.
+            ELC Las Flores combina formación académica con acompañamiento cercano para estudiantes, familias y docentes.
           </p>
           <div className="mt-8 flex flex-wrap gap-3" data-aos="fade-up" data-aos-delay="300">
             <a

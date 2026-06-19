@@ -3,7 +3,7 @@ import { Globe2, ShieldCheck, Users2 } from "lucide-react";
 const features = [
   { icon: Users2, title: "Acompañamiento humano", text: "Seguimiento cercano para estudiantes y tutores en cada etapa del aprendizaje." },
   { icon: Globe2, title: "Inglés práctico", text: "Enfoque real en conversación, comprensión y uso del idioma en contextos cotidianos." },
-  { icon: ShieldCheck, title: "Gestión confiable", text: "Organización clara para matrículas, pagos, reportes y comunicación institucional." },
+  { icon: ShieldCheck, title: "Gestión clara", text: "Organización de matrículas, pagos, reportes y comunicación institucional." },
 ];
 
 export function FeaturesSection() {
