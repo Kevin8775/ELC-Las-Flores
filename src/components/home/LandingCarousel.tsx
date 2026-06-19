@@ -62,7 +62,7 @@ export function LandingCarousel() {
       onBlur={() => setPaused(false)}
     >
       <div
-        className="group relative overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm"
+        className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-slate-900/5"
         role="region"
         aria-roledescription="carrusel"
         aria-label="Galería de imágenes institucionales"

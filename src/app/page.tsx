@@ -11,15 +11,18 @@ import { FooterContactSection } from "@/components/landing/FooterContactSection"
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { BackToTop } from "@/components/landing/BackToTop";
 import { LandingCarousel } from "@/components/home/LandingCarousel";
+import { WaveDivider } from "@/components/landing/WaveDivider";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(244,196,48,0.18),transparent_32%),linear-gradient(180deg,#f8fbff_0%,#eef4fb_100%)] text-slate-900">
+    <div className="min-h-screen bg-[linear-gradient(180deg,#f8fbff_0%,#eef4fb_100%)] text-slate-900">
       <AOSInit />
       <LandingHeader />
       <main>
         <HeroSection />
+        <WaveDivider fill="#ffffff" />
         <LandingCarousel />
+        <WaveDivider fill="#f0f6ff" flip />
         <AboutSection />
         <FeaturesSection />
         <TestimonialsSection />

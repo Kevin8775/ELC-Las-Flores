@@ -38,7 +38,7 @@ export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="elc-section-alt mx-auto max-w-6xl px-4 py-16">
+    <section id="faq" className="elc-section-alt mx-auto max-w-6xl px-4 py-20">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -67,7 +67,7 @@ export function FaqSection() {
           return (
             <div
               key={i}
-              className={`elc-card overflow-hidden transition-shadow ${isOpen ? "shadow-md" : "shadow-sm"}`}
+              className={`elc-card-pro overflow-hidden transition-shadow ${isOpen ? "shadow-lg" : ""}`}
             >
               <button
                 type="button"

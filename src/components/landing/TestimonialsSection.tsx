@@ -11,7 +11,17 @@ type Testimonial = {
   rol?: string;
 };
 
+const borderColors = [
+  "from-primary to-primary-light",
+  "from-accent to-amber-500",
+  "from-[#25d366] to-[#20bd5a]",
+];
 
+const avatarColors = [
+  "from-primary to-primary-light",
+  "from-accent to-amber-500",
+  "from-[#25d366] to-[#20bd5a]",
+];
 
 export function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -56,17 +66,18 @@ export function TestimonialsSection() {
   const items = testimonials;
 
   return (
-    <section id="testimonios" className="bg-white py-16">
-      <div className="mx-auto max-w-6xl px-4">
+    <section id="testimonios" className="relative bg-white py-20">
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,#f8fbff_0%,#f0f6ff_50%,#f8fbff_100%)]" />
+      <div className="relative mx-auto max-w-6xl px-4">
         <div className="text-center" data-aos="fade-up">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Testimonios</p>
           <h2 className="mt-3 font-serif text-3xl font-black text-primary md:text-4xl">Lo que dicen nuestros estudiantes</h2>
         </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {loading
             ? Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="animate-pulse rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+                <div key={i} className="animate-pulse rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                   <div className="h-4 w-3/4 rounded bg-slate-200" />
                   <div className="mt-4 space-y-2">
                     <div className="h-3 w-full rounded bg-slate-200" />
@@ -83,15 +94,15 @@ export function TestimonialsSection() {
             : items.map((item, i) => (
                 <article
                   key={item.id}
-                  className="elc-card relative overflow-hidden p-6 transition hover:-translate-y-1 hover:shadow-xl"
+                  className="elc-card-pro relative overflow-hidden p-7"
                   data-aos="fade-up"
                   data-aos-delay={i * 100}
                 >
-                  <div className="absolute left-0 top-0 h-full w-1 rounded-l-[28px] bg-gradient-to-b from-primary to-primary-light" />
-                  <Quote className="h-8 w-8 text-primary/15" />
+                  <div className={`absolute left-0 top-0 h-full w-1.5 rounded-l-2xl bg-gradient-to-b ${borderColors[i % borderColors.length]}`} />
+                  <Quote className="h-8 w-8 text-primary/10" />
                   <p className="mt-4 leading-7 text-slate-600">&ldquo;{item.texto}&rdquo;</p>
                   <div className="mt-6 flex items-center gap-3 border-t border-slate-100 pt-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-light text-sm font-bold text-white">
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br ${avatarColors[i % avatarColors.length]} text-sm font-bold text-white shadow-md`}>
                       {item.nombre.charAt(0)}
                     </div>
                     <div>
@@ -104,7 +115,7 @@ export function TestimonialsSection() {
         </div>
 
         <div className="mx-auto mt-14 max-w-lg" data-aos="fade-up">
-          <div className="elc-card p-8 shadow-sm">
+          <div className="elc-card-pro p-8">
             <h3 className="text-center font-serif text-xl font-bold text-primary">Comparte tu experiencia</h3>
             <p className="mt-2 text-center text-sm text-slate-500">Tu opinión ayuda a otros a conocer nuestra institución.</p>
 
@@ -154,7 +165,7 @@ export function TestimonialsSection() {
                 <button
                   type="submit"
                   disabled={sending}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-primary-light disabled:opacity-60"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary/15 transition hover:-translate-y-0.5 hover:bg-primary-light disabled:opacity-60"
                 >
                   {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   {sending ? "Enviando..." : "Enviar testimonio"}

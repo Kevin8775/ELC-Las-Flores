@@ -78,15 +78,15 @@ export function NewsSection() {
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between" data-aos="fade-up">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Noticias y anuncios</p>
-            <h2 className="mt-3 font-serif text-3xl font-black text-primary md:text-4xl">Contenido reciente y relevante.</h2>
+            <h2 className="mt-3 font-serif text-3xl font-black text-primary md:text-4xl">Contenido reciente y relevante</h2>
           </div>
-          <p className="max-w-xl text-slate-600">Mantente al día con los comunicados, eventos y actividades de nuestra institución.</p>
+          <p className="max-w-xl text-slate-500">Mantente al día con los comunicados, eventos y actividades de nuestra institución.</p>
         </div>
 
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
           {loading
             ? Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="animate-pulse rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+                <div key={i} className="animate-pulse rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div className="h-5 w-20 rounded-full bg-slate-200" />
                     <div className="h-4 w-24 rounded bg-slate-200" />
@@ -102,7 +102,7 @@ export function NewsSection() {
                 return (
                   <article
                     key={item.id}
-                    className="elc-card elc-card-hover overflow-hidden p-6"
+                    className="elc-card-pro overflow-hidden p-6"
                     data-aos="fade-up"
                     data-aos-delay={i * 80}
                   >
@@ -119,7 +119,7 @@ export function NewsSection() {
         </div>
 
         <div className="mx-auto mt-14 max-w-lg" data-aos="fade-up">
-          <div className="elc-card p-8 shadow-sm">
+          <div className="elc-card-pro p-8">
             <h3 className="text-center font-serif text-xl font-bold text-primary">Déjanos tu comentario</h3>
             <p className="mt-2 text-center text-sm text-slate-500">¿Qué opinas de nuestras noticias? Te leemos.</p>
 
@@ -158,7 +158,7 @@ export function NewsSection() {
                 <button
                   type="submit"
                   disabled={sending}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-primary-light disabled:opacity-60"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary/15 transition hover:-translate-y-0.5 hover:bg-primary-light disabled:opacity-60"
                 >
                   {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   {sending ? "Enviando..." : "Enviar comentario"}
