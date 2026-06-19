@@ -37,7 +37,7 @@ export default function LoginPage() {
       <section className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-slate-100">
-            <Image src="/LogoELCLFM.png" alt="ELC Las Flores" width={80} height={80} className="h-full w-full object-contain p-1" />
+            <Image src="/LogoELCLFM.webp" alt="ELC Las Flores" width={80} height={80} className="h-full w-full object-contain p-1" />
           </div>
           <p className="text-sm font-semibold text-[#2E5587]">ELC Las Flores</p>
           <h1 className="mt-2 font-serif text-2xl font-bold text-[#1E3A5F]">Iniciar sesion</h1>

@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const slides = [
-  { src: "/Image1.jpeg", alt: "Estudiantes de ELC Las Flores en actividades académicas" },
-  { src: "/Image2.jpeg", alt: "Actividad académica en ELC Las Flores" },
-  { src: "/Image3.jpeg", alt: "Ambiente del centro educativo ELC Las Flores" },
+  { src: "/Image1.webp", alt: "Estudiantes de ELC Las Flores en actividades académicas" },
+  { src: "/Image2.webp", alt: "Actividad académica en ELC Las Flores" },
+  { src: "/Image3.webp", alt: "Ambiente del centro educativo ELC Las Flores" },
 ];
 
 export function LandingCarousel() {
@@ -44,12 +45,12 @@ export function LandingCarousel() {
     }
   };
 
+  const prev = () => goTo((index - 1 + slides.length) % slides.length);
+  const next = () => goTo((index + 1) % slides.length);
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowLeft") {
-      goTo((index - 1 + slides.length) % slides.length);
-    } else if (e.key === "ArrowRight") {
-      goTo((index + 1) % slides.length);
-    }
+    if (e.key === "ArrowLeft") prev();
+    else if (e.key === "ArrowRight") next();
   };
 
   return (
@@ -61,7 +62,7 @@ export function LandingCarousel() {
       onBlur={() => setPaused(false)}
     >
       <div
-        className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm"
+        className="group relative overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm"
         role="region"
         aria-roledescription="carrusel"
         aria-label="Galería de imágenes institucionales"
@@ -86,14 +87,30 @@ export function LandingCarousel() {
                   src={slide.src}
                   alt={slide.alt}
                   fill
-                  className="object-contain"
+                  className="object-cover"
                   priority={i === 0}
-                  loading={i === 0 ? undefined : "lazy"}
-                  sizes="(max-width: 1200px) 100vw, 1200px"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
                 />
               </div>
             ))}
           </div>
+
+          <button
+            type="button"
+            onClick={prev}
+            className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-all hover:bg-black/50 group-hover:opacity-100"
+            aria-label="Imagen anterior"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={next}
+            className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-all hover:bg-black/50 group-hover:opacity-100"
+            aria-label="Imagen siguiente"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
 
           <div className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 bg-gradient-to-t from-black/40 to-transparent p-4">
             {slides.map((slide, i) => (

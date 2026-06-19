@@ -1,4 +1,5 @@
-import { ArrowRight, CalendarDays, CheckCircle2, MessageCircle, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 const WHATSAPP_NUMBER = "50578421018";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("¡Hola! Quiero inscribirme en ELC Las Flores.")}`;
@@ -66,31 +67,24 @@ export function HeroSection() {
         </div>
 
         <div
-          className="rounded-[28px] border border-white/15 bg-white/10 p-5 shadow-2xl shadow-slate-950/20 backdrop-blur-xl"
+          className="relative overflow-hidden rounded-[28px] shadow-2xl shadow-slate-950/30"
           data-aos="fade-left"
           data-aos-delay="200"
         >
-          <div className="rounded-[24px] bg-white p-6 text-slate-900">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-light">Turno sabatino</p>
-            <div className="mt-5 space-y-4">
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-xs font-semibold uppercase text-slate-500">Modalidad</p>
-                <p className="mt-2 text-lg font-bold">Clases todos los sábados</p>
-                <p className="mt-1 text-sm text-slate-600">Horarios según nivel y edad del estudiante.</p>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-2xl border border-slate-200 p-4">
-                  <CalendarDays className="h-5 w-5 text-primary" />
-                  <p className="mt-3 text-sm font-semibold text-slate-900">Niños</p>
-                  <p className="text-sm text-slate-600">Nivel inicial</p>
-                </div>
-                <div className="rounded-2xl border border-slate-200 p-4">
-                  <CheckCircle2 className="h-5 w-5 text-primary" />
-                  <p className="mt-3 text-sm font-semibold text-slate-900">Jóvenes y adultos</p>
-                  <p className="text-sm text-slate-600">Niveles intermedios y avanzados</p>
-                </div>
-              </div>
-            </div>
+          <div className="aspect-[4/3] w-full">
+            <Image
+              src="/Image1.webp"
+              alt="Estudiantes de ELC Las Flores en actividades académicas"
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 400px"
+              priority
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/80">Clases sabatinas</p>
+            <p className="mt-1 text-lg font-bold text-white">Niños, jóvenes y adultos</p>
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ export function LandingFooter() {
           <div>
             <div className="flex items-center gap-3">
               <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-white shadow-md shadow-slate-900/10">
-                <Image src="/LogoELCLFM.png" alt="ELC Las Flores" width={48} height={48} className="h-full w-full object-contain p-0.5" />
+                <Image src="/LogoELCLFM.webp" alt="ELC Las Flores" width={48} height={48} className="h-full w-full object-contain p-0.5" />
               </span>
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-slate-500">ELC</p>

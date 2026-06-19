@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { BookOpen, GraduationCap, Users } from "lucide-react";
 
 const stats = [
@@ -28,17 +29,25 @@ export function AboutSection() {
             })}
           </div>
         </div>
-        <div className="elc-card relative overflow-hidden p-8 shadow-sm">
-          <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-primary/5 blur-2xl" />
-          <p className="relative max-w-3xl text-lg leading-8 text-slate-700">
-            ELC Las Flores impulsa el aprendizaje del idioma inglés con enfoque práctico, disciplina académica y acompañamiento a estudiantes y tutores.
-          </p>
-          <div className="relative mt-6 flex flex-wrap gap-2">
-            {["Práctico", "Disciplinado"].map((tag) => (
-              <span key={tag} className="rounded-full bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
-                {tag}
-              </span>
-            ))}
+        <div className="relative overflow-hidden rounded-[28px]" data-aos="fade-left" data-aos-delay="100">
+          <div className="aspect-[4/3] w-full">
+            <Image
+              src="/Image2.webp"
+              alt="Actividad académica en ELC Las Flores"
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 500px"
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/30 via-transparent to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            <div className="flex flex-wrap gap-2">
+              {["Práctico", "Disciplinado"].map((tag) => (
+                <span key={tag} className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-primary shadow-sm">
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>

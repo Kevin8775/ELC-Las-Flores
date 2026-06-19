@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    icon: "/LogoELCLFM.png",
+    icon: "/LogoELCLFM.webp",
   },
   openGraph: {
     title: "ELC Las Flores - Centro de Inglés Sabatino | Las Flores, Masaya",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/LogoELCLFM.png",
+        url: "/LogoELCLFM.webp",
         width: 512,
         height: 512,
         alt: "ELC Las Flores - Centro de Inglés Sabatino",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     title: "ELC Las Flores - Centro de Inglés Sabatino",
     description:
       "Formación académica en inglés con modalidad sabatina para niños, jóvenes y adultos en Las Flores, Masaya, Nicaragua.",
-    images: ["/LogoELCLFM.png"],
+    images: ["/LogoELCLFM.webp"],
   },
 };
 
@@ -80,8 +80,8 @@ export default function RootLayout({
               url: "https://elclasflores.netlify.app",
               telephone: "+50578421018",
               email: "contacto@elclasflores.edu.ni",
-              logo: "https://elclasflores.netlify.app/LogoELCLFM.png",
-              image: "https://elclasflores.netlify.app/LogoELCLFM.png",
+              logo: "https://elclasflores.netlify.app/LogoELCLFM.webp",
+              image: "https://elclasflores.netlify.app/LogoELCLFM.webp",
               address: {
                 "@type": "PostalAddress",
                 streetAddress: "Las Flores",
