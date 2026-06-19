@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const slides = [
@@ -10,128 +10,181 @@ const slides = [
   { src: "/Image3.webp", alt: "Ambiente del centro educativo ELC Las Flores" },
 ];
 
+const AUTO_INTERVAL = 4500;
+const SWIPE_THRESHOLD = 50;
+
 export function LandingCarousel() {
-  const [index, setIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [touchDeltaX, setTouchDeltaX] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false);
   const intervalRef = useRef<number | null>(null);
 
-  const clearTimer = () => {
+  const total = slides.length;
+
+  const clearTimer = useCallback(() => {
     if (intervalRef.current !== null) {
       window.clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-  };
+  }, []);
 
-  const startTimer = () => {
+  const startTimer = useCallback(() => {
     clearTimer();
     intervalRef.current = window.setInterval(() => {
-      setIndex((current) => (current + 1) % slides.length);
-    }, 4500);
-  };
+      setActiveIndex((prev) => (prev + 1) % total);
+    }, AUTO_INTERVAL);
+  }, [clearTimer, total]);
 
   useEffect(() => {
-    if (!paused) {
-      startTimer();
-    } else {
-      clearTimer();
-    }
+    if (!paused) startTimer();
+    else clearTimer();
     return clearTimer;
-  }, [paused]);
+  }, [paused, startTimer, clearTimer]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") setActiveIndex((prev) => (prev - 1 + total) % total);
+      else if (e.key === "ArrowRight") setActiveIndex((prev) => (prev + 1) % total);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [total]);
 
   const goTo = (i: number) => {
-    setIndex(i);
-    if (!paused) {
-      startTimer();
-    }
+    setActiveIndex(i);
+    if (!paused) startTimer();
   };
 
-  const prev = () => goTo((index - 1 + slides.length) % slides.length);
-  const next = () => goTo((index + 1) % slides.length);
+  const prev = () => goTo((activeIndex - 1 + total) % total);
+  const next = () => goTo((activeIndex + 1) % total);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowLeft") prev();
-    else if (e.key === "ArrowRight") next();
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+    setTouchDeltaX(0);
+    setIsSwiping(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isSwiping) return;
+    setTouchDeltaX(e.touches[0].clientX - touchStartX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchDeltaX > SWIPE_THRESHOLD) prev();
+    else if (touchDeltaX < -SWIPE_THRESHOLD) next();
+    setIsSwiping(false);
+    setTouchDeltaX(0);
   };
 
   return (
-    <section
-      className="mx-auto max-w-6xl px-4 pt-8 pb-4 md:pt-12"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
-    >
+    <section className="mx-auto max-w-6xl px-4 pt-8 pb-4 md:pt-12">
       <div
-        className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-slate-900/5"
+        className="group relative mx-auto max-w-4xl"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         role="region"
         aria-roledescription="carrusel"
         aria-label="Galería de imágenes institucionales"
-        tabIndex={0}
-        onKeyDown={handleKeyDown}
       >
-        <div className="relative aspect-[16/8] w-full overflow-hidden bg-slate-950/5">
-          <div
-            className="flex h-full w-full transition-transform duration-700 ease-out"
-            style={{ transform: `translateX(-${index * 100}%)` }}
-          >
-            {slides.map((slide, i) => (
-              <div
-                key={slide.src}
-                className="relative h-full min-w-full"
-                role="group"
-                aria-roledescription="slide"
-                aria-label={`Imagen ${i + 1} de ${slides.length}`}
-                aria-hidden={i !== index}
-              >
-                <Image
-                  src={slide.src}
-                  alt=""
-                  fill
-                  className="object-cover blur-xl scale-110 opacity-60"
-                  aria-hidden
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                />
-                <Image
-                  src={slide.src}
-                  alt={slide.alt}
-                  fill
-                  className="object-contain p-0 md:p-4"
-                  priority={i === 0}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                />
-              </div>
-            ))}
-          </div>
+        {/* Blurred background */}
+        <div className="absolute inset-0 overflow-hidden rounded-3xl">
+          <Image
+            src={slides[activeIndex].src}
+            alt=""
+            fill
+            className="scale-125 object-cover opacity-20 blur-2xl transition-all duration-700"
+            aria-hidden
+            sizes="100vw"
+          />
+        </div>
 
-          <button
-            type="button"
-            onClick={prev}
-            className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-all hover:bg-black/50 group-hover:opacity-100"
-            aria-label="Imagen anterior"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            onClick={next}
-            className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/30 text-white opacity-0 backdrop-blur-sm transition-all hover:bg-black/50 group-hover:opacity-100"
-            aria-label="Imagen siguiente"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
+        {/* Coverflow container */}
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200/50 bg-white/5 backdrop-blur-sm" style={{ perspective: "1200px" }}>
+          <div className="relative flex items-center justify-center" style={{ height: "clamp(220px, 40vw, 420px)" }}>
+            {slides.map((slide, i) => {
+              const offset = i - activeIndex;
+              const absOffset = Math.abs(offset);
+              const sign = offset > 0 ? 1 : offset < 0 ? -1 : 0;
+              const isActive = offset === 0;
+              const isVisible = absOffset <= 2;
 
-          <div className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 bg-gradient-to-t from-black/40 to-transparent p-4">
-            {slides.map((slide, i) => (
-              <button
-                key={slide.src}
-                type="button"
-                aria-label={`Ir a la imagen ${i + 1}`}
-                aria-current={i === index ? "true" : undefined}
-                onClick={() => goTo(i)}
-                className={`h-2.5 rounded-full transition-all ${i === index ? "w-8 bg-white" : "w-2.5 bg-white/50 hover:bg-white/70"}`}
-              />
-            ))}
+              if (!isVisible) return null;
+
+              return (
+                <div
+                  key={slide.src}
+                  className="coverflow-card absolute left-1/2 top-1/2"
+                  style={{
+                    width: "clamp(180px, 35vw, 420px)",
+                    aspectRatio: "16/10",
+                    transform: `
+                      translate(calc(-50% + ${offset * 52}%), -50%)
+                      scale(${1 - absOffset * 0.2})
+                      rotateY(${sign * 20}deg)
+                    `,
+                    opacity: 1 - absOffset * 0.35,
+                    zIndex: 10 - absOffset,
+                    filter: isActive ? "none" : "blur(1.5px)",
+                    pointerEvents: isActive ? "auto" : "none",
+                  }}
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label={`Imagen ${i + 1} de ${total}`}
+                  aria-hidden={!isActive}
+                >
+                  <Image
+                    src={slide.src}
+                    alt={slide.alt}
+                    fill
+                    className={`rounded-2xl object-cover shadow-2xl transition-shadow duration-500 ${
+                      isActive ? "shadow-slate-900/20" : "shadow-slate-900/10"
+                    }`}
+                    priority={i === 0}
+                    sizes="(max-width: 768px) 55vw, (max-width: 1200px) 35vw, 420px"
+                  />
+                </div>
+              );
+            })}
           </div>
+        </div>
+
+        {/* Navigation arrows */}
+        <button
+          type="button"
+          onClick={prev}
+          className="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-lg shadow-slate-900/10 opacity-0 backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl group-hover:opacity-100"
+          aria-label="Imagen anterior"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          type="button"
+          onClick={next}
+          className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-lg shadow-slate-900/10 opacity-0 backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl group-hover:opacity-100"
+          aria-label="Imagen siguiente"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+
+        {/* Dot indicators */}
+        <div className="relative z-20 mt-4 flex items-center justify-center gap-2">
+          {slides.map((slide, i) => (
+            <button
+              key={slide.src}
+              type="button"
+              aria-label={`Ir a la imagen ${i + 1}`}
+              aria-current={i === activeIndex ? "true" : undefined}
+              onClick={() => goTo(i)}
+              className={`h-2.5 rounded-full transition-all duration-300 ${
+                i === activeIndex ? "w-8 bg-primary" : "w-2.5 bg-slate-300 hover:bg-slate-400"
+              }`}
+            />
+          ))}
         </div>
       </div>
     </section>
