@@ -24,7 +24,7 @@ slidesRouter.post("/", requireAuth, upload.single("imagen"), async (req, res) =>
     });
     res.status(201).json({ slide });
   } catch (err) {
-    console.error("SLIDES UPLOAD ERROR:", err);
+    console.error(err);
     res.status(500).json({ error: "Error al subir imagen" });
   }
 });
