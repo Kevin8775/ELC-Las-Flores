@@ -6,9 +6,16 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { api } from "@/lib/api";
 
 const fallbackSlides = [
-  { src: "/Image1.webp", alt: "Estudiantes de ELC Las Flores en actividades académicas" },
-  { src: "/Image2.webp", alt: "Actividad académica en ELC Las Flores" },
-  { src: "/Image3.webp", alt: "Ambiente del centro educativo ELC Las Flores" },
+  { src: "/carousel-1.jpg", alt: "Estudiantes de ELC Las Flores" },
+  { src: "/carousel-2.jpg", alt: "Actividades académicas en ELC Las Flores" },
+  { src: "/carousel-3.jpg", alt: "Instalaciones de ELC Las Flores" },
+  { src: "/carousel-4.jpg", alt: "Aprendizaje del inglés en ELC Las Flores" },
+  { src: "/carousel-5.jpg", alt: "Comunidad educativa ELC Las Flores" },
+  { src: "/carousel-6.jpg", alt: "Clases de inglés en ELC Las Flores" },
+  { src: "/carousel-7.jpg", alt: "Vida estudiantil ELC Las Flores" },
+  { src: "/carousel-8.jpg", alt: "ELC Las Flores - Tu futuro sin fronteras" },
+  { src: "/carousel-9.jpg", alt: "Centro educativo ELC Las Flores" },
+  { src: "/carousel-10.jpg", alt: "Aprende inglés con ELC Las Flores" },
 ];
 
 type SlideData = {
