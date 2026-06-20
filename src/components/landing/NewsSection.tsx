@@ -1,17 +1,23 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Loader2, Send } from "lucide-react";
+
+type NoticiaImagen = {
+  id: string;
+  url: string;
+  alt: string | null;
+};
 
 type Noticia = {
   id: string;
   titulo: string;
   categoria: string;
   createdAt: string;
+  imagenes: NoticiaImagen[];
 };
-
-
 
 const categoryColors: Record<string, { bg: string; text: string }> = {
   Noticia: { bg: "bg-primary/10", text: "text-primary" },
@@ -99,20 +105,34 @@ export function NewsSection() {
             ? <p className="col-span-full py-8 text-center text-sm text-slate-400">Aún no hay noticias publicadas.</p>
             : items.slice(0, 6).map((item, i) => {
                 const colors = categoryColors[item.categoria] ?? { bg: "bg-slate-100", text: "text-slate-700" };
+                const firstImage = item.imagenes?.[0];
                 return (
                   <article
                     key={item.id}
-                    className="elc-card-pro overflow-hidden p-6"
+                    className="elc-card-pro overflow-hidden"
                     data-aos="fade-up"
                     data-aos-delay={i * 80}
                   >
-                    <div className="flex items-center justify-between gap-3">
-                      <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${colors.bg} ${colors.text}`}>
-                        {item.categoria}
-                      </span>
-                      <span className="text-xs text-slate-500">{formatDate(item.createdAt)}</span>
+                    {firstImage && (
+                      <div className="relative aspect-video w-full">
+                        <Image
+                          src={firstImage.url}
+                          alt={firstImage.alt || item.titulo}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
+                        />
+                      </div>
+                    )}
+                    <div className="p-6">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${colors.bg} ${colors.text}`}>
+                          {item.categoria}
+                        </span>
+                        <span className="text-xs text-slate-500">{formatDate(item.createdAt)}</span>
+                      </div>
+                      <h3 className="mt-5 text-xl font-bold text-slate-900">{item.titulo}</h3>
                     </div>
-                    <h3 className="mt-5 text-xl font-bold text-slate-900">{item.titulo}</h3>
                   </article>
                 );
               })}

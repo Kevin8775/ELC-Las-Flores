@@ -1,8 +1,16 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, apiUpload } from "@/lib/api";
 import { Loader2, Megaphone, Pencil, Plus, Trash2, X } from "lucide-react";
+
+type NoticiaImagen = {
+  id: string;
+  url: string;
+  alt: string | null;
+  orden: number;
+};
 
 type Noticia = {
   id: string;
@@ -11,6 +19,7 @@ type Noticia = {
   categoria: string;
   publicado: boolean;
   createdAt: string;
+  imagenes: NoticiaImagen[];
 };
 
 const CATEGORIAS = [
@@ -27,6 +36,8 @@ export default function NoticiasAdminPage() {
   const [titulo, setTitulo] = useState("");
   const [contenido, setContenido] = useState("");
   const [categoria, setCategoria] = useState("NOTICIA");
+  const [files, setFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
   const load = () => {
@@ -38,19 +49,36 @@ export default function NoticiasAdminPage() {
 
   useEffect(() => { load(); }, []);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFiles = Array.from(e.target.files || []);
+    setFiles((prev) => [...prev, ...newFiles]);
+    const newPreviews = newFiles.map((f) => URL.createObjectURL(f));
+    setPreviews((prev) => [...prev, ...newPreviews]);
+  };
+
+  const removeFile = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!titulo.trim() || !contenido.trim()) return;
     setSaving(true);
 
     try {
-      await api("/noticias", {
-        method: "POST",
-        body: JSON.stringify({ titulo: titulo.trim(), contenido: contenido.trim(), categoria }),
-      });
+      const fd = new FormData();
+      fd.append("titulo", titulo.trim());
+      fd.append("contenido", contenido.trim());
+      fd.append("categoria", categoria);
+      files.forEach((f) => fd.append("imagenes", f));
+
+      await apiUpload("/noticias", fd);
       setTitulo("");
       setContenido("");
       setCategoria("NOTICIA");
+      setFiles([]);
+      setPreviews([]);
       setShowForm(false);
       load();
     } finally {
@@ -115,6 +143,32 @@ export default function NoticiasAdminPage() {
               required
               className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
             />
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Imágenes (opcional, máx. 10)</label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileChange}
+                className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10 file:mr-4 file:rounded-lg file:border-0 file:bg-[#1E3A5F] file:px-3 file:py-1 file:text-sm file:text-white file:font-semibold hover:file:bg-[#2E5587]"
+              />
+            </div>
+            {previews.length > 0 && (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                {previews.map((p, i) => (
+                  <div key={i} className="relative aspect-video overflow-hidden rounded-xl">
+                    <Image src={p} alt="" fill className="object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeFile(i)}
+                      className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-white shadow-md transition hover:bg-red-700"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
             <button
               type="submit"
               disabled={saving}
@@ -147,9 +201,21 @@ export default function NoticiasAdminPage() {
                     {CATEGORIAS.find((c) => c.value === n.categoria)?.label ?? n.categoria}
                   </span>
                   <span className="text-xs text-slate-400">{formatDate(n.createdAt)}</span>
+                  {n.imagenes.length > 0 && (
+                    <span className="text-xs text-slate-400">({n.imagenes.length} fotos)</span>
+                  )}
                 </div>
                 <h3 className="mt-2 text-lg font-bold text-slate-900">{n.titulo}</h3>
                 <p className="mt-1 line-clamp-2 text-sm text-slate-600">{n.contenido}</p>
+                {n.imagenes.length > 0 && (
+                  <div className="mt-3 flex gap-2 overflow-x-auto">
+                    {n.imagenes.map((img) => (
+                      <div key={img.id} className="relative h-16 w-24 shrink-0 overflow-hidden rounded-lg">
+                        <Image src={img.url} alt={img.alt || ""} fill className="object-cover" />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <button
                 type="button"

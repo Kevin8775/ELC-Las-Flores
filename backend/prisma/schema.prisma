@@ -216,8 +216,27 @@ model Noticia {
   publicado        Boolean          @default(false)
   autorId          String
   autor            Admin            @relation(fields: [autorId], references: [id], onDelete: Cascade)
+  imagenes         NoticiaImagen[]
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
+}
+
+model NoticiaImagen {
+  id        String  @id @default(cuid())
+  url       String
+  alt       String?
+  orden     Int     @default(0)
+  noticiaId String
+  noticia   Noticia @relation(fields: [noticiaId], references: [id], onDelete: Cascade)
+}
+
+model Slide {
+  id        String   @id @default(cuid())
+  src       String
+  alt       String?
+  orden     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Nota {

@@ -3,23 +3,42 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { api } from "@/lib/api";
 
-const slides = [
+const fallbackSlides = [
   { src: "/Image1.webp", alt: "Estudiantes de ELC Las Flores en actividades académicas" },
   { src: "/Image2.webp", alt: "Actividad académica en ELC Las Flores" },
   { src: "/Image3.webp", alt: "Ambiente del centro educativo ELC Las Flores" },
 ];
 
+type SlideData = {
+  id: string;
+  src: string;
+  alt: string | null;
+};
+
 const AUTO_INTERVAL = 4500;
 const SWIPE_THRESHOLD = 50;
 
 export function LandingCarousel() {
+  const [slides, setSlides] = useState<SlideData[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [touchStartX, setTouchStartX] = useState(0);
   const [touchDeltaX, setTouchDeltaX] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
   const intervalRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    api<{ slides: SlideData[] }>("/slides")
+      .then((data) => {
+        if (data.slides.length > 0) setSlides(data.slides);
+        else setSlides(fallbackSlides.map((s, i) => ({ id: `fb-${i}`, src: s.src, alt: s.alt })));
+      })
+      .catch(() => {
+        setSlides(fallbackSlides.map((s, i) => ({ id: `fb-${i}`, src: s.src, alt: s.alt })));
+      });
+  }, []);
 
   const total = slides.length;
 
@@ -38,10 +57,10 @@ export function LandingCarousel() {
   }, [clearTimer, total]);
 
   useEffect(() => {
-    if (!paused) startTimer();
+    if (!paused && total > 0) startTimer();
     else clearTimer();
     return clearTimer;
-  }, [paused, startTimer, clearTimer]);
+  }, [paused, startTimer, clearTimer, total]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -78,12 +97,13 @@ export function LandingCarousel() {
     setTouchDeltaX(0);
   };
 
+  if (slides.length === 0) return null;
+
   return (
     <section className="relative pt-8 pb-4 md:pt-12">
-      {/* Blurred background — full width */}
       <div className="absolute inset-0 overflow-hidden">
         <Image
-          src={slides[activeIndex].src}
+          src={slides[activeIndex]?.src || fallbackSlides[0].src}
           alt=""
           fill
           className="scale-125 object-cover opacity-15 blur-3xl transition-all duration-700"
@@ -103,7 +123,6 @@ export function LandingCarousel() {
         aria-roledescription="carrusel"
         aria-label="Galería de imágenes institucionales"
       >
-        {/* Coverflow container — no overflow clipping */}
         <div className="relative" style={{ perspective: "1200px" }}>
           <div
             className="relative flex items-center justify-center"
@@ -120,7 +139,7 @@ export function LandingCarousel() {
 
               return (
                 <div
-                  key={slide.src}
+                  key={slide.id}
                   className="coverflow-card absolute left-1/2 top-1/2"
                   style={{
                     width: "clamp(260px, 75vw, 900px)",
@@ -142,7 +161,7 @@ export function LandingCarousel() {
                 >
                   <Image
                     src={slide.src}
-                    alt={slide.alt}
+                    alt={slide.alt || ""}
                     fill
                     className={`rounded-3xl object-cover transition-shadow duration-500 ${
                       isActive
@@ -158,7 +177,6 @@ export function LandingCarousel() {
           </div>
         </div>
 
-        {/* Navigation arrows */}
         <button
           type="button"
           onClick={prev}
@@ -176,11 +194,10 @@ export function LandingCarousel() {
           <ChevronRight className="h-5 w-5" />
         </button>
 
-        {/* Dot indicators */}
         <div className="relative z-20 mt-6 flex items-center justify-center gap-2.5">
           {slides.map((slide, i) => (
             <button
-              key={slide.src}
+              key={slide.id}
               type="button"
               aria-label={`Ir a la imagen ${i + 1}`}
               aria-current={i === activeIndex ? "true" : undefined}

@@ -15,6 +15,7 @@ import { noticiasRouter } from "./routes/noticias";
 import { configuracionRouter } from "./routes/configuracion";
 import { testimoniosRouter } from "./routes/testimonios";
 import { comentariosRouter } from "./routes/comentarios";
+import { slidesRouter } from "./routes/slides";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use("/api/noticias", noticiasRouter);
 app.use("/api/configuracion", configuracionRouter);
 app.use("/api/testimonios", testimoniosRouter);
 app.use("/api/comentarios", comentariosRouter);
+app.use("/api/slides", slidesRouter);
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
