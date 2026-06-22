@@ -5,10 +5,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { api } from "@/lib/api";
 
-const fallbackSlides = Array.from({ length: 38 }, (_, i) => ({
-  src: `/carousel-${i + 1}.webp`,
-  alt: `ELC Las Flores - imagen ${i + 1}`,
-}));
+const fallbackSlides = [
+  ...Array.from({ length: 38 }, (_, i) => ({
+    src: `/carousel-${i + 1}.webp`,
+    alt: `ELC Las Flores - imagen ${i + 1}`,
+  })),
+  { src: "/elcimage1.webp", alt: "ELC Las Flores - imagen institucional 1" },
+  { src: "/elcimage2.webp", alt: "ELC Las Flores - imagen institucional 2" },
+];
 
 type SlideData = {
   id: string;

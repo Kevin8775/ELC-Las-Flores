@@ -5,12 +5,14 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FormEvent, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
@@ -49,7 +51,12 @@ export default function LoginPage() {
           </label>
           <label className="block text-sm">
             Contrasena
-            <input ref={passwordRef} type="password" className="mt-1 w-full rounded-md border border-slate-300 p-2" placeholder="********" required />
+            <div className="relative mt-1">
+              <input ref={passwordRef} type={showPassword ? "text" : "password"} className="w-full rounded-md border border-slate-300 p-2 pr-10" placeholder="********" required />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </div>
           </label>
           {error && (
             <p className="text-sm text-red-600">{error}</p>
