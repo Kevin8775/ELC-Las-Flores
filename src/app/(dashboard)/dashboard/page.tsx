@@ -147,7 +147,7 @@ export default function DashboardPage() {
 
         <article className="elc-card p-6 shadow-sm md:p-7">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#2E5587]">Accesos rápidos</p>
-          <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
             {shortcuts.map((item) => (
               <button key={item} className="flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:border-[#2E5587] hover:shadow-sm">
                 <span className="text-xs uppercase tracking-[0.2em] text-slate-400">Acción</span>

@@ -108,7 +108,7 @@ export default function EstudiantesPage() {
 
   return (
     <main>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-serif text-3xl font-bold text-[#1E3A5F]">Gestion de estudiantes</h1>
         <button
           onClick={openCreate}

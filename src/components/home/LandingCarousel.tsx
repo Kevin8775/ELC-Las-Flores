@@ -146,7 +146,7 @@ export function LandingCarousel() {
                   className="coverflow-card absolute left-1/2 top-1/2"
                   style={{
                     width: "clamp(260px, 75vw, 900px)",
-                    aspectRatio: "16/10",
+                    aspectRatio: "4/3",
                     transform: `
                       translate(calc(-50% + ${offset * 18}%), -50%)
                       scale(${1 - absOffset * 0.15})

@@ -66,7 +66,7 @@ export default function SlidesAdminPage() {
 
   return (
     <main>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-serif text-3xl font-bold text-[#1E3A5F]">Carrusel</h1>
           <p className="mt-1 text-sm text-slate-500">Administra las imágenes del carrusel principal</p>

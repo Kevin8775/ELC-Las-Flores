@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, LogOut, User2 } from "lucide-react";
+import { ChevronDown, LogOut, Menu, User2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
-export function DashboardHeader() {
+export function DashboardHeader({ onToggleSidebar }: { onToggleSidebar: () => void }) {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -31,7 +31,16 @@ export function DashboardHeader() {
 
   return (
     <header className="sticky top-0 z-20 mb-6 border-b border-white/10 bg-[linear-gradient(180deg,#13273f_0%,#1E3A5F_100%)] px-4 py-3 text-white shadow-lg shadow-slate-950/10 backdrop-blur-xl md:px-6">
-      <div className="relative flex items-center justify-end gap-3" ref={menuRef}>
+      <div className="relative flex items-center justify-between gap-3" ref={menuRef}>
+        <button
+          type="button"
+          onClick={onToggleSidebar}
+          className="flex lg:hidden h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/80 transition hover:bg-white/10"
+          aria-label="Abrir menu"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
