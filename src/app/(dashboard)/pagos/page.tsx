@@ -3,6 +3,8 @@
 import { FormEvent, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { getSaturdaysInRange, MESES } from "@/lib/saturdays";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Estudiante {
   id: string;
@@ -84,6 +86,7 @@ export default function PagosPage() {
   const [busquedaEstudiante, setBusquedaEstudiante] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedSaturdays, setSelectedSaturdays] = useState<Set<number>>(new Set());
+  const [loading, setLoading] = useState(true);
 
   const estudiantesFiltrados = estudiantes.filter(
     (e) =>
@@ -137,12 +140,16 @@ export default function PagosPage() {
   }, [form.tipoPago, form.mes, form.anio, saturdays.length]);
 
   useEffect(() => {
-    api<{ pagos: Pago[] }>("/pagos")
-      .then((data) => setPagos(data.pagos))
-      .catch(() => {});
-    api<{ estudiantes: Estudiante[] }>("/estudiantes")
-      .then((data) => setEstudiantes(data.estudiantes))
-      .catch(() => {});
+    Promise.all([
+      api<{ pagos: Pago[] }>("/pagos"),
+      api<{ estudiantes: Estudiante[] }>("/estudiantes"),
+    ])
+      .then(([pagosData, estudiantesData]) => {
+        setPagos(pagosData.pagos);
+        setEstudiantes(estudiantesData.estudiantes);
+      })
+      .catch(() => toast.error("Error al cargar datos"))
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -204,7 +211,7 @@ export default function PagosPage() {
     try {
       if (form.tipoPago === "SEMANAL" && saturdays.length > 0) {
         if (selectedSaturdays.size === 0) {
-          alert("Selecciona al menos un sábado para registrar el pago.");
+          toast.warning("Selecciona al menos un sábado para registrar el pago.");
           setSubmitting(false);
           return;
         }
@@ -235,7 +242,7 @@ export default function PagosPage() {
         });
 
         if (editingId) {
-          alert("No se puede editar un pago semanal multiple. Use la opcion de pago unico.");
+          toast.warning("No se puede editar un pago semanal multiple. Use la opcion de pago unico.");
           setSubmitting(false);
           return;
         }
@@ -246,6 +253,7 @@ export default function PagosPage() {
         });
         setPagos((prev) => [...data.pagos, ...prev]);
         resetForm();
+        toast.success(editingId ? "Pago actualizado" : "Pagos registrados");
       } else {
         const monto = form.tipoPago === "MENSUAL" ? saturdays.length * WEEKLY_AMOUNT : WEEKLY_AMOUNT;
         const montoPagado = form.tipoPago === "MENSUAL" ? saturdays.length * WEEKLY_AMOUNT : WEEKLY_AMOUNT;
@@ -281,9 +289,10 @@ export default function PagosPage() {
           setPagos((prev) => [data.pago, ...prev]);
         }
         resetForm();
+        toast.success(editingId ? "Pago actualizado" : "Pago registrado");
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Error al guardar pago");
+      toast.error(err instanceof Error ? err.message : "Error al guardar pago");
     } finally {
       setSubmitting(false);
     }
@@ -314,8 +323,9 @@ export default function PagosPage() {
     try {
       await api(`/pagos/${id}`, { method: "DELETE" });
       setPagos((prev) => prev.filter((p) => p.id !== id));
+      toast.success("Pago eliminado");
     } catch (err) {
-      console.error(err);
+      toast.error(err instanceof Error ? err.message : "Error al eliminar pago");
     }
   }
 
@@ -616,6 +626,11 @@ export default function PagosPage() {
         </div>
       )}
 
+      {loading ? (
+        <div className="mt-8 flex justify-center">
+          <Loader2 className="h-6 w-6 animate-spin text-[#1E3A5F]" />
+        </div>
+      ) : (
       <div className="elc-card mt-6 overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-slate-50 text-left">
@@ -662,6 +677,7 @@ export default function PagosPage() {
           </tbody>
         </table>
       </div>
+      )}
     </main>
   );
 }

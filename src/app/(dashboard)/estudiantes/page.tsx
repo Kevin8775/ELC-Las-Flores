@@ -1,7 +1,9 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "@/lib/api";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Estudiante {
   id: string;
@@ -37,6 +39,9 @@ export default function EstudiantesPage() {
   const [showForm, setShowForm] = useState(false);
   const [formNivel, setFormNivel] = useState("");
   const [formTurno, setFormTurno] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const formDirty = useRef(false);
   const editingEstudiante = estudiantes.find((e) => e.id === editingId) ?? null;
 
   useEffect(() => {
@@ -48,7 +53,8 @@ export default function EstudiantesPage() {
         setEstudiantes(estudiantesData.estudiantes);
         setGrupos(gruposData.grupos);
       })
-      .catch(() => {});
+      .catch(() => toast.error("Error al cargar estudiantes"))
+      .finally(() => setLoading(false));
   }, []);
 
   const grupoSeleccionado = useMemo(() => {
@@ -58,30 +64,51 @@ export default function EstudiantesPage() {
 
   async function handleCreate(e: FormEvent) {
     e.preventDefault();
-    const form = new FormData(e.target as HTMLFormElement);
-    const data = await api<{ estudiante: Estudiante }>("/estudiantes", {
-      method: "POST",
-      body: JSON.stringify(Object.fromEntries(form)),
-    });
-    setEstudiantes((prev) => [...prev, data.estudiante]);
-    closeForm();
+    setSubmitting(true);
+    try {
+      const form = new FormData(e.target as HTMLFormElement);
+      const data = await api<{ estudiante: Estudiante }>("/estudiantes", {
+        method: "POST",
+        body: JSON.stringify(Object.fromEntries(form)),
+      });
+      setEstudiantes((prev) => [...prev, data.estudiante]);
+      toast.success("Estudiante creado");
+      closeForm();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al crear estudiante");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   async function handleUpdate(e: FormEvent, id: string) {
     e.preventDefault();
-    const form = new FormData(e.target as HTMLFormElement);
-    const data = await api<{ estudiante: Estudiante }>(`/estudiantes/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(Object.fromEntries(form)),
-    });
-    setEstudiantes((prev) => prev.map((s) => (s.id === id ? data.estudiante : s)));
-    closeForm();
+    setSubmitting(true);
+    try {
+      const form = new FormData(e.target as HTMLFormElement);
+      const data = await api<{ estudiante: Estudiante }>(`/estudiantes/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(Object.fromEntries(form)),
+      });
+      setEstudiantes((prev) => prev.map((s) => (s.id === id ? data.estudiante : s)));
+      toast.success("Estudiante actualizado");
+      closeForm();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al actualizar estudiante");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   async function handleDelete(id: string) {
     if (!confirm("Eliminar este estudiante?")) return;
-    await api(`/estudiantes/${id}`, { method: "DELETE" });
-    setEstudiantes((prev) => prev.filter((s) => s.id !== id));
+    try {
+      await api(`/estudiantes/${id}`, { method: "DELETE" });
+      setEstudiantes((prev) => prev.filter((s) => s.id !== id));
+      toast.success("Estudiante eliminado");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al eliminar estudiante");
+    }
   }
 
   function openCreate() {
@@ -89,6 +116,7 @@ export default function EstudiantesPage() {
     setFormNivel("");
     setFormTurno("");
     setShowForm(true);
+    formDirty.current = false;
   }
 
   function openEdit(id: string) {
@@ -97,6 +125,7 @@ export default function EstudiantesPage() {
     setFormNivel(estudiante?.nivel ?? "");
     setFormTurno(estudiante?.turno ?? "");
     setShowForm(true);
+    formDirty.current = false;
   }
 
   function closeForm() {
@@ -104,6 +133,12 @@ export default function EstudiantesPage() {
     setEditingId(null);
     setFormNivel("");
     setFormTurno("");
+    formDirty.current = false;
+  }
+
+  function handleBackdropClose() {
+    if (formDirty.current && !confirm("¿Descartar cambios?")) return;
+    closeForm();
   }
 
   return (
@@ -119,16 +154,20 @@ export default function EstudiantesPage() {
       </div>
 
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={closeForm}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={handleBackdropClose}>
           <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between">
               <h2 className="font-serif text-xl font-bold text-[#1E3A5F]">
                 {editingId ? "Editar estudiante" : "Nuevo estudiante"}
               </h2>
-              <button onClick={closeForm} className="rounded-md bg-slate-200 px-3 py-1 text-sm hover:bg-slate-300">&times;</button>
+              <button onClick={handleBackdropClose} className="rounded-md bg-slate-200 px-3 py-1 text-sm hover:bg-slate-300">&times;</button>
             </div>
             <form
-              onSubmit={(e) => editingId ? handleUpdate(e, editingId) : handleCreate(e)}
+              onSubmit={(e) => {
+                formDirty.current = false;
+                return editingId ? handleUpdate(e, editingId) : handleCreate(e);
+              }}
+              onChange={() => { formDirty.current = true; }}
               className="grid gap-4 sm:grid-cols-2"
             >
               <Label name="nombre" label="Nombre" defaultValue={editingEstudiante?.nombre} required />
@@ -194,11 +233,11 @@ export default function EstudiantesPage() {
                 </div>
               </div>
               <div className="flex gap-2 sm:col-span-2 sm:justify-end">
-                <button type="button" onClick={closeForm} className="rounded-md bg-slate-500 px-4 py-2 text-sm font-semibold text-white">
+                <button type="button" onClick={handleBackdropClose} className="rounded-md bg-slate-500 px-4 py-2 text-sm font-semibold text-white">
                   Cancelar
                 </button>
-                <button type="submit" className="rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-white">
-                  {editingId ? "Guardar cambios" : "Guardar estudiante"}
+                <button type="submit" disabled={submitting} className="rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+                  {submitting ? "Guardando..." : editingId ? "Guardar cambios" : "Guardar estudiante"}
                 </button>
               </div>
             </form>
@@ -206,40 +245,46 @@ export default function EstudiantesPage() {
         </div>
       )}
 
-      <div className="elc-card mt-6 overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left">
-            <tr>
-              <th className="p-3">Matricula</th>
-              <th className="p-3">Nombre</th>
-              <th className="p-3">Nivel</th>
-              <th className="p-3">Turno</th>
-              <th className="p-3">Estado</th>
-              <th className="p-3">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {estudiantes.map((e) => (
-              <tr key={e.id} className="border-t border-slate-200">
-                <td className="p-3">{e.numeroMatricula}</td>
-                <td className="p-3">{e.nombre}</td>
-                <td className="p-3">{e.nivel}</td>
-                <td className="p-3">{e.turno}</td>
-                <td className="p-3">{e.estado}</td>
-                <td className="flex gap-2 p-3">
-                  <button onClick={() => openEdit(e.id)} className="text-sm text-blue-700 underline">Editar</button>
-                  <button onClick={() => handleDelete(e.id)} className="text-sm text-red-700 underline">Eliminar</button>
-                </td>
-              </tr>
-            ))}
-            {estudiantes.length === 0 && (
+      {loading ? (
+        <div className="mt-8 flex justify-center">
+          <Loader2 className="h-6 w-6 animate-spin text-[#1E3A5F]" />
+        </div>
+      ) : (
+        <div className="elc-card mt-6 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 text-left">
               <tr>
-                <td colSpan={6} className="p-6 text-center text-slate-400">No hay estudiantes registrados</td>
+                <th className="p-3">Matricula</th>
+                <th className="p-3">Nombre</th>
+                <th className="p-3">Nivel</th>
+                <th className="p-3">Turno</th>
+                <th className="p-3">Estado</th>
+                <th className="p-3">Acciones</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {estudiantes.map((e) => (
+                <tr key={e.id} className="border-t border-slate-200">
+                  <td className="p-3">{e.numeroMatricula}</td>
+                  <td className="p-3">{e.nombre}</td>
+                  <td className="p-3">{e.nivel}</td>
+                  <td className="p-3">{e.turno}</td>
+                  <td className="p-3">{e.estado}</td>
+                  <td className="flex gap-2 p-3">
+                    <button onClick={() => openEdit(e.id)} className="text-sm text-blue-700 underline">Editar</button>
+                    <button onClick={() => handleDelete(e.id)} className="text-sm text-red-700 underline">Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+              {estudiantes.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="p-6 text-center text-slate-400">No hay estudiantes registrados</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </main>
   );
 }

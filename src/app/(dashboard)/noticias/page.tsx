@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { api, apiUpload } from "@/lib/api";
 import { Loader2, Megaphone, Pencil, Plus, Trash2, X } from "lucide-react";
+import { toast } from "sonner";
 
 type NoticiaImagen = {
   id: string;
@@ -63,7 +64,10 @@ export default function NoticiasAdminPage() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!titulo.trim() || !contenido.trim()) return;
+    if (!titulo.trim() || !contenido.trim()) {
+      toast.warning("Titulo y contenido son obligatorios");
+      return;
+    }
     setSaving(true);
 
     try {
@@ -81,6 +85,9 @@ export default function NoticiasAdminPage() {
       setPreviews([]);
       setShowForm(false);
       load();
+      toast.success("Noticia publicada");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al publicar noticia");
     } finally {
       setSaving(false);
     }
@@ -88,8 +95,13 @@ export default function NoticiasAdminPage() {
 
   const eliminar = async (id: string) => {
     if (!confirm("¿Eliminar esta noticia?")) return;
-    await api(`/noticias/${id}`, { method: "DELETE" });
-    load();
+    try {
+      await api(`/noticias/${id}`, { method: "DELETE" });
+      load();
+      toast.success("Noticia eliminada");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al eliminar noticia");
+    }
   };
 
   const formatDate = (d: string) => {

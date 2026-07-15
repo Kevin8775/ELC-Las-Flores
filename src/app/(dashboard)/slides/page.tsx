@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { api, apiUpload } from "@/lib/api";
 import { Loader2, Plus, Trash2, X } from "lucide-react";
+import { toast } from "sonner";
 
 type Slide = {
   id: string;
@@ -53,6 +54,9 @@ export default function SlidesAdminPage() {
       setPreview(null);
       setShowForm(false);
       load();
+      toast.success("Imagen subida");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al subir imagen");
     } finally {
       setSaving(false);
     }
@@ -60,8 +64,13 @@ export default function SlidesAdminPage() {
 
   const eliminar = async (id: string) => {
     if (!confirm("¿Eliminar este slide?")) return;
-    await api(`/slides/${id}`, { method: "DELETE" });
-    load();
+    try {
+      await api(`/slides/${id}`, { method: "DELETE" });
+      load();
+      toast.success("Slide eliminado");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al eliminar slide");
+    }
   };
 
   return (

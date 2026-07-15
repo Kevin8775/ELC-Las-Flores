@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Toaster } from "sonner";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { AuthGuard } from "@/components/dashboard/AuthGuard";
@@ -10,6 +11,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <AuthGuard>
+      <Toaster position="top-right" richColors />
       <div className="min-h-screen bg-[linear-gradient(180deg,#eef4fb_0%,#f8fbff_100%)]">
         <div className="flex min-h-screen">
           <DashboardSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
