@@ -1,7 +1,14 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { z } from "zod";
 import { api } from "@/lib/api";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { MultiStepForm, Step } from "@/components/ui/MultiStepForm";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { Button } from "@/components/ui/Button";
 
 interface Docente {
   id: string;
@@ -14,160 +21,178 @@ interface Docente {
   estado: string;
 }
 
+const step1Schema = z.object({
+  nombre: z.string().min(1, "Nombre requerido"),
+  correoElectronico: z.string().email("Correo invalido").min(1, "Correo requerido"),
+  telefono: z.string().optional().or(z.literal("")),
+  genero: z.string().optional().or(z.literal("")),
+});
+
+const step2Schema = z.object({
+  direccion: z.string().optional().or(z.literal("")),
+  especialidad: z.string().optional().or(z.literal("")),
+});
+
 export default function DocentesPage() {
   const [docentes, setDocentes] = useState<Docente[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const editingDocente = docentes.find((d) => d.id === editingId) ?? null;
 
   useEffect(() => {
     api<{ docentes: Docente[] }>("/docentes")
       .then((data) => setDocentes(data.docentes))
-      .catch(() => {});
+      .catch(() => toast.error("Error al cargar docentes"))
+      .finally(() => setLoading(false));
   }, []);
 
-  async function handleCreate(e: FormEvent) {
-    e.preventDefault();
-    const form = new FormData(e.target as HTMLFormElement);
-    const data = await api<{ docente: Docente }>("/docentes", {
-      method: "POST",
-      body: JSON.stringify(Object.fromEntries(form)),
-    });
-    setDocentes((prev) => [...prev, data.docente]);
-    closeForm();
-  }
+  const defaultValues = useMemo(() => {
+    if (editingDocente) {
+      return {
+        nombre: editingDocente.nombre,
+        correoElectronico: editingDocente.correoElectronico,
+        telefono: editingDocente.telefono ?? "",
+        genero: editingDocente.genero ?? "",
+        direccion: editingDocente.direccion ?? "",
+        especialidad: editingDocente.especialidad ?? "",
+      };
+    }
+    return {
+      nombre: "",
+      correoElectronico: "",
+      telefono: "",
+      genero: "",
+      direccion: "",
+      especialidad: "",
+    };
+  }, [editingDocente]);
 
-  async function handleUpdate(e: FormEvent, id: string) {
-    e.preventDefault();
-    const form = new FormData(e.target as HTMLFormElement);
-    const data = await api<{ docente: Docente }>(`/docentes/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(Object.fromEntries(form)),
-    });
-    setDocentes((prev) => prev.map((d) => (d.id === id ? data.docente : d)));
-    closeForm();
+  async function handleSubmit(data: any) {
+    setSubmitting(true);
+    try {
+      if (editingId) {
+        const result = await api<{ docente: Docente }>(`/docentes/${editingId}`, {
+          method: "PUT",
+          body: JSON.stringify(data),
+        });
+        setDocentes((prev) => prev.map((d) => (d.id === editingId ? result.docente : d)));
+        toast.success("Docente actualizado");
+      } else {
+        const result = await api<{ docente: Docente }>("/docentes", {
+          method: "POST",
+          body: JSON.stringify(data),
+        });
+        setDocentes((prev) => [...prev, result.docente]);
+        toast.success("Docente creado");
+      }
+      setShowForm(false);
+      setEditingId(null);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al guardar docente");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   async function handleDelete(id: string) {
     if (!confirm("Eliminar este docente?")) return;
-    await api(`/docentes/${id}`, { method: "DELETE" });
-    setDocentes((prev) => prev.filter((d) => d.id !== id));
+    try {
+      await api(`/docentes/${id}`, { method: "DELETE" });
+      setDocentes((prev) => prev.filter((d) => d.id !== id));
+      toast.success("Docente eliminado");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al eliminar docente");
+    }
   }
 
-  function openCreate() {
-    setEditingId(null);
-    setShowForm(true);
-  }
-
-  function openEdit(id: string) {
-    setEditingId(id);
-    setShowForm(true);
-  }
-
-  function closeForm() {
-    setShowForm(false);
-    setEditingId(null);
-  }
+  const steps: Step[] = [
+    {
+      label: "Datos personales",
+      schema: step1Schema,
+      children: (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Input name="nombre" label="Nombre completo" required />
+          <Input name="correoElectronico" label="Correo electronico" type="email" required />
+          <Input name="telefono" label="Telefono" />
+          <Select name="genero" label="Genero" options={["M", "F"]} />
+        </div>
+      ),
+    },
+    {
+      label: "Detalles",
+      schema: step2Schema,
+      children: (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Input name="direccion" label="Direccion" className="sm:col-span-2" />
+          <Input name="especialidad" label="Especialidad" />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <main>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-serif text-3xl font-bold text-[#1E3A5F]">Gestion de docentes</h1>
-        <button
-          onClick={openCreate}
-          className="rounded-md bg-[#1E3A5F] px-4 py-2 text-sm font-semibold text-white"
-        >
+        <Button onClick={() => { setEditingId(null); setShowForm(true); }}>
           Nuevo docente
-        </button>
+        </Button>
       </div>
 
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={closeForm}>
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-serif text-xl font-bold text-[#1E3A5F]">
-                {editingId ? "Editar docente" : "Nuevo docente"}
-              </h2>
-              <button onClick={closeForm} className="rounded-md bg-slate-200 px-3 py-1 text-sm hover:bg-slate-300">&times;</button>
-            </div>
-            <form
-              onSubmit={(e) => editingId ? handleUpdate(e, editingId) : handleCreate(e)}
-              className="grid gap-4 sm:grid-cols-2"
-            >
-              <Label name="nombre" label="Nombre" defaultValue={editingDocente?.nombre} required />
-              <Label name="correoElectronico" label="Correo electronico" type="email" defaultValue={editingDocente?.correoElectronico} required />
-              <Label name="telefono" label="Telefono" defaultValue={editingDocente?.telefono ?? ""} />
-              <Label name="fechaNacimiento" label="Fecha nacimiento" type="date" />
-              <Select name="genero" label="Genero" options={["M", "F"]} defaultValue={editingDocente?.genero} />
-              <Label name="direccion" label="Direccion" defaultValue={editingDocente?.direccion ?? ""} />
-              <Label name="especialidad" label="Especialidad" defaultValue={editingDocente?.especialidad ?? ""} />
-              <Label name="fechaIngreso" label="Fecha ingreso" type="date" />
-              <div className="flex gap-2 sm:col-span-2 sm:justify-end">
-                <button type="button" onClick={closeForm} className="rounded-md bg-slate-500 px-4 py-2 text-sm font-semibold text-white">
-                  Cancelar
-                </button>
-                <button type="submit" className="rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-white">
-                  {editingId ? "Guardar cambios" : "Guardar docente"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <MultiStepForm
+          steps={steps}
+          onSubmit={handleSubmit}
+          defaultValues={defaultValues}
+          mode="modal"
+          isEditing={!!editingId}
+          title={editingId ? "Editar docente" : "Nuevo docente"}
+          onClose={() => { setShowForm(false); setEditingId(null); }}
+          dirtyCheck
+          submitting={submitting}
+        />
       )}
 
-      <div className="elc-card mt-6 overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left">
-            <tr>
-              <th className="p-3">Nombre</th>
-              <th className="p-3">Correo</th>
-              <th className="p-3">Especialidad</th>
-              <th className="p-3">Estado</th>
-              <th className="p-3">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {docentes.map((d) => (
-              <tr key={d.id} className="border-t border-slate-200">
-                <td className="p-3">{d.nombre}</td>
-                <td className="p-3">{d.correoElectronico}</td>
-                <td className="p-3">{d.especialidad ?? "-"}</td>
-                <td className="p-3">{d.estado}</td>
-                <td className="flex gap-2 p-3">
-                  <button onClick={() => openEdit(d.id)} className="text-sm text-blue-700 underline">Editar</button>
-                  <button onClick={() => handleDelete(d.id)} className="text-sm text-red-700 underline">Eliminar</button>
-                </td>
-              </tr>
-            ))}
-            {docentes.length === 0 && (
+      {loading ? (
+        <div className="mt-8 flex justify-center">
+          <Loader2 className="h-6 w-6 animate-spin text-[#1E3A5F]" />
+        </div>
+      ) : (
+        <div className="elc-card mt-6 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 text-left">
               <tr>
-                <td colSpan={5} className="p-6 text-center text-slate-400">No hay docentes registrados</td>
+                <th className="p-3">Nombre</th>
+                <th className="p-3">Correo</th>
+                <th className="p-3">Especialidad</th>
+                <th className="p-3">Estado</th>
+                <th className="p-3">Acciones</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {docentes.map((d) => (
+                <tr key={d.id} className="border-t border-slate-200">
+                  <td className="p-3">{d.nombre}</td>
+                  <td className="p-3">{d.correoElectronico}</td>
+                  <td className="p-3">{d.especialidad ?? "-"}</td>
+                  <td className="p-3">{d.estado}</td>
+                  <td className="flex gap-2 p-3">
+                    <button onClick={() => { setEditingId(d.id); setShowForm(true); }} className="text-sm text-blue-700 underline">Editar</button>
+                    <button onClick={() => handleDelete(d.id)} className="text-sm text-red-700 underline">Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+              {docentes.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="p-6 text-center text-slate-400">No hay docentes registrados</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </main>
-  );
-}
-
-function Label({ name, label, type = "text", required, defaultValue, className }: { name: string; label: string; type?: string; required?: boolean; defaultValue?: string; className?: string }) {
-  return (
-    <label className={`block text-sm ${className ?? ""}`}>
-      {label}
-      <input name={name} type={type} defaultValue={defaultValue} className="mt-1 w-full rounded border p-2 text-sm" required={required} />
-    </label>
-  );
-}
-
-function Select({ name, label, options, required, defaultValue, className }: { name: string; label: string; options: string[]; required?: boolean; defaultValue?: string; className?: string }) {
-  return (
-    <label className={`block text-sm ${className ?? ""}`}>
-      {label}
-      <select name={name} defaultValue={defaultValue} className="mt-1 w-full rounded border p-2 text-sm" required={required}>
-        <option value="">Seleccionar</option>
-        {options.map((o) => <option key={o} value={o}>{o}</option>)}
-      </select>
-    </label>
   );
 }

@@ -2,9 +2,16 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { api, apiUpload } from "@/lib/api";
-import { Loader2, Megaphone, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Loader2, Megaphone, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
+import { MultiStepForm, Step } from "@/components/ui/MultiStepForm";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { Textarea } from "@/components/ui/Textarea";
+import { Button } from "@/components/ui/Button";
 
 type NoticiaImagen = {
   id: string;
@@ -30,13 +37,16 @@ const CATEGORIAS = [
   { value: "LOGRO", label: "Logro" },
 ];
 
+const step1Schema = z.object({
+  titulo: z.string().min(1, "Titulo requerido"),
+  categoria: z.string().min(1, "Categoria requerida"),
+  contenido: z.string().min(1, "Contenido requerido"),
+});
+
 export default function NoticiasAdminPage() {
   const [items, setItems] = useState<Noticia[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [titulo, setTitulo] = useState("");
-  const [contenido, setContenido] = useState("");
-  const [categoria, setCategoria] = useState("NOTICIA");
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -62,25 +72,16 @@ export default function NoticiasAdminPage() {
     setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!titulo.trim() || !contenido.trim()) {
-      toast.warning("Titulo y contenido son obligatorios");
-      return;
-    }
+  const handleCreate = async (data: any) => {
     setSaving(true);
-
     try {
       const fd = new FormData();
-      fd.append("titulo", titulo.trim());
-      fd.append("contenido", contenido.trim());
-      fd.append("categoria", categoria);
+      fd.append("titulo", data.titulo.trim());
+      fd.append("contenido", data.contenido.trim());
+      fd.append("categoria", data.categoria);
       files.forEach((f) => fd.append("imagenes", f));
 
       await apiUpload("/noticias", fd);
-      setTitulo("");
-      setContenido("");
-      setCategoria("NOTICIA");
       setFiles([]);
       setPreviews([]);
       setShowForm(false);
@@ -110,87 +111,73 @@ export default function NoticiasAdminPage() {
     } catch { return d; }
   };
 
+  const steps: Step[] = [
+    {
+      label: "Contenido",
+      schema: step1Schema,
+      children: (
+        <div className="space-y-4">
+          <Input name="titulo" label="Titulo" required />
+          <Select name="categoria" label="Categoria" options={CATEGORIAS} required />
+          <Textarea name="contenido" label="Contenido" rows={6} required />
+        </div>
+      ),
+    },
+    {
+      label: "Imagenes",
+      children: (
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Imagenes (opcional, max. 10)</label>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFileChange}
+            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10 file:mr-4 file:rounded-lg file:border-0 file:bg-[#1E3A5F] file:px-3 file:py-1 file:text-sm file:text-white file:font-semibold hover:file:bg-[#2E5587]"
+          />
+          {previews.length > 0 && (
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {previews.map((p, i) => (
+                <div key={i} className="relative aspect-video overflow-hidden rounded-xl">
+                  <Image src={p} alt="" fill className="object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => removeFile(i)}
+                    className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-white shadow-md transition hover:bg-red-700"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          {files.length === 0 && (
+            <p className="mt-3 text-sm text-slate-400">No has seleccionado imagenes aun.</p>
+          )}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <main>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-serif text-3xl font-bold text-[#1E3A5F]">Noticias</h1>
-        <button
-          type="button"
-          onClick={() => setShowForm(!showForm)}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#1E3A5F] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2E5587]"
-        >
-          {showForm ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-          {showForm ? "Cancelar" : "Crear noticia"}
-        </button>
+        <Button onClick={() => setShowForm(!showForm)} variant={showForm ? "secondary" : "primary"}>
+          {showForm ? <><X className="h-4 w-4" /> Cancelar</> : <><Plus className="h-4 w-4" /> Crear noticia</>}
+        </Button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleCreate} className="elc-card mt-6 p-6">
-          <h2 className="flex items-center gap-2 text-lg font-bold text-[#1E3A5F]">
-            <Pencil className="h-5 w-5" /> Nueva noticia
-          </h2>
-          <div className="mt-5 space-y-4">
-            <input
-              type="text"
-              placeholder="Título"
-              value={titulo}
-              onChange={(e) => setTitulo(e.target.value)}
-              required
-              className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-            />
-            <select
-              value={categoria}
-              onChange={(e) => setCategoria(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-            >
-              {CATEGORIAS.map((c) => (
-                <option key={c.value} value={c.value}>{c.label}</option>
-              ))}
-            </select>
-            <textarea
-              placeholder="Contenido"
-              rows={6}
-              value={contenido}
-              onChange={(e) => setContenido(e.target.value)}
-              required
-              className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-            />
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Imágenes (opcional, máx. 10)</label>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleFileChange}
-                className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10 file:mr-4 file:rounded-lg file:border-0 file:bg-[#1E3A5F] file:px-3 file:py-1 file:text-sm file:text-white file:font-semibold hover:file:bg-[#2E5587]"
-              />
-            </div>
-            {previews.length > 0 && (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                {previews.map((p, i) => (
-                  <div key={i} className="relative aspect-video overflow-hidden rounded-xl">
-                    <Image src={p} alt="" fill className="object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => removeFile(i)}
-                      className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-white shadow-md transition hover:bg-red-700"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-            <button
-              type="submit"
-              disabled={saving}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#1E3A5F] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#2E5587] disabled:opacity-60"
-            >
-              {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-              {saving ? "Publicando..." : "Publicar noticia"}
-            </button>
-          </div>
-        </form>
+        <MultiStepForm
+          steps={steps}
+          onSubmit={handleCreate}
+          mode="inline"
+          title="Nueva noticia"
+          onClose={() => setShowForm(false)}
+          submitting={saving}
+          submitLabel="Publicar noticia"
+        />
       )}
 
       {loading ? (
@@ -202,7 +189,7 @@ export default function NoticiasAdminPage() {
           {items.length === 0 && (
             <div className="elc-card p-8 text-center">
               <Megaphone className="mx-auto h-10 w-10 text-slate-300" />
-              <p className="mt-3 text-sm text-slate-500">No hay noticias aún. Crea la primera.</p>
+              <p className="mt-3 text-sm text-slate-500">No hay noticias aun. Crea la primera.</p>
             </div>
           )}
           {items.map((n) => (
