@@ -4,10 +4,11 @@ import { TextareaHTMLAttributes, forwardRef } from "react";
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   error?: string;
+  registerReturn?: any;
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, label, error, required, ...props }, ref) => {
+  ({ className, label, error, required, registerReturn, ...props }, ref) => {
     return (
       <label className={cn("block text-sm", className)}>
         <span className="flex items-center gap-1">
@@ -22,6 +23,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             "focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10",
             error && "border-red-400 focus:border-red-500 focus:ring-red-500/10"
           )}
+          {...registerReturn}
           {...props}
         />
         {error && <p className="mt-1 text-xs text-red-600">{error}</p>}

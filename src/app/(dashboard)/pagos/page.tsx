@@ -6,7 +6,6 @@ import { getSaturdaysInRange, MESES } from "@/lib/saturdays";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
-import { Modal } from "@/components/ui/Modal";
 
 interface Estudiante {
   id: string;
@@ -348,7 +347,13 @@ export default function PagosPage() {
       </div>
 
       {showForm && (
-        <Modal open onClose={resetForm} title={editingId ? "Editar pago" : "Registrar pago"}>
+        <div className="elc-card p-6">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="font-serif text-xl font-bold text-[#1E3A5F]">
+              {editingId ? "Editar pago" : "Registrar pago"}
+            </h2>
+            <button onClick={resetForm} className="rounded-md bg-slate-200 px-3 py-1 text-sm hover:bg-slate-300">&times;</button>
+          </div>
           <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
             <Label label="Estudiante">
               <div className="relative mt-1">
@@ -605,7 +610,7 @@ export default function PagosPage() {
               </Button>
             </div>
           </form>
-        </Modal>
+        </div>
       )}
 
       {loading ? (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { api } from "@/lib/api";
 import { Loader2 } from "lucide-react";
@@ -107,29 +108,31 @@ export default function DocentesPage() {
     }
   }
 
+  function Step1() {
+    const { register } = useFormContext();
+    return (
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Input name="nombre" label="Nombre completo" required registerReturn={register("nombre")} />
+        <Input name="correoElectronico" label="Correo electronico" type="email" required registerReturn={register("correoElectronico")} />
+        <Input name="telefono" label="Telefono" registerReturn={register("telefono")} />
+        <Select name="genero" label="Genero" options={["M", "F"]} registerReturn={register("genero")} />
+      </div>
+    );
+  }
+
+  function Step2() {
+    const { register } = useFormContext();
+    return (
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Input name="direccion" label="Direccion" className="sm:col-span-2" registerReturn={register("direccion")} />
+        <Input name="especialidad" label="Especialidad" registerReturn={register("especialidad")} />
+      </div>
+    );
+  }
+
   const steps: Step[] = [
-    {
-      label: "Datos personales",
-      schema: step1Schema,
-      children: (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Input name="nombre" label="Nombre completo" required />
-          <Input name="correoElectronico" label="Correo electronico" type="email" required />
-          <Input name="telefono" label="Telefono" />
-          <Select name="genero" label="Genero" options={["M", "F"]} />
-        </div>
-      ),
-    },
-    {
-      label: "Detalles",
-      schema: step2Schema,
-      children: (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Input name="direccion" label="Direccion" className="sm:col-span-2" />
-          <Input name="especialidad" label="Especialidad" />
-        </div>
-      ),
-    },
+    { label: "Datos personales", schema: step1Schema, children: <Step1 /> },
+    { label: "Detalles", schema: step2Schema, children: <Step2 /> },
   ];
 
   return (
@@ -146,11 +149,9 @@ export default function DocentesPage() {
           steps={steps}
           onSubmit={handleSubmit}
           defaultValues={defaultValues}
-          mode="modal"
           isEditing={!!editingId}
           title={editingId ? "Editar docente" : "Nuevo docente"}
           onClose={() => { setShowForm(false); setEditingId(null); }}
-          dirtyCheck
           submitting={submitting}
         />
       )}

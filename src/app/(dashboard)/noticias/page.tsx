@@ -172,7 +172,6 @@ export default function NoticiasAdminPage() {
         <MultiStepForm
           steps={steps}
           onSubmit={handleCreate}
-          mode="inline"
           title="Nueva noticia"
           onClose={() => setShowForm(false)}
           submitting={saving}

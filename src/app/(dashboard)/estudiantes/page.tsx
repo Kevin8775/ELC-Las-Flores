@@ -187,25 +187,22 @@ export default function EstudiantesPage() {
   }
 
   function Step1() {
+    const { register } = useFormContext();
     return (
       <div className="grid gap-4 sm:grid-cols-2">
-        <Input name="nombre" label="Nombre completo" required />
-        <Input name="fechaNacimiento" label="Fecha de nacimiento" type="date" required />
-        <Select name="genero" label="Genero" options={["M", "F"]} required />
+        <Input name="nombre" label="Nombre completo" required registerReturn={register("nombre")} />
+        <Input name="fechaNacimiento" label="Fecha de nacimiento" type="date" required registerReturn={register("fechaNacimiento")} />
+        <Select name="genero" label="Genero" options={["M", "F"]} required registerReturn={register("genero")} />
       </div>
     );
   }
 
   function Step2() {
+    const { register } = useFormContext();
     return (
       <div>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Select
-            name="nivel"
-            label="Nivel"
-            options={["BASICO", "INTERMEDIO", "AVANZADO"]}
-            required
-          />
+          <Select name="nivel" label="Nivel" options={["BASICO", "INTERMEDIO", "AVANZADO"]} required registerReturn={register("nivel")} />
           <Select
             name="turno"
             label="Turno"
@@ -214,6 +211,7 @@ export default function EstudiantesPage() {
               { value: "VESPERTINO", label: "Sabatino - Tarde" },
             ]}
             required
+            registerReturn={register("turno")}
           />
         </div>
         <GrupoPreview grupos={grupos} />
@@ -222,23 +220,25 @@ export default function EstudiantesPage() {
   }
 
   function Step3() {
+    const { register } = useFormContext();
     return (
       <div className="grid gap-4 sm:grid-cols-2">
-        <Input name="correoElectronico" label="Correo electronico" type="email" />
-        <Input name="telefono" label="Telefono" />
-        <Input name="direccion" label="Direccion completa" className="sm:col-span-2" required />
+        <Input name="correoElectronico" label="Correo electronico" type="email" registerReturn={register("correoElectronico")} />
+        <Input name="telefono" label="Telefono" registerReturn={register("telefono")} />
+        <Input name="direccion" label="Direccion completa" className="sm:col-span-2" required registerReturn={register("direccion")} />
       </div>
     );
   }
 
   function Step4() {
+    const { register } = useFormContext();
     return (
       <div className="grid gap-4 sm:grid-cols-2">
-        <Input name="tutorNombre" label="Nombre del tutor" required />
-        <Input name="tutorParentesco" label="Parentesco" required />
-        <Input name="tutorTelefono" label="Telefono del tutor" required />
-        <Input name="tutorCorreo" label="Correo del tutor" type="email" />
-        <Input name="tutorDireccion" label="Direccion del tutor" className="sm:col-span-2" />
+        <Input name="tutorNombre" label="Nombre del tutor" required registerReturn={register("tutorNombre")} />
+        <Input name="tutorParentesco" label="Parentesco" required registerReturn={register("tutorParentesco")} />
+        <Input name="tutorTelefono" label="Telefono del tutor" required registerReturn={register("tutorTelefono")} />
+        <Input name="tutorCorreo" label="Correo del tutor" type="email" registerReturn={register("tutorCorreo")} />
+        <Input name="tutorDireccion" label="Direccion del tutor" className="sm:col-span-2" registerReturn={register("tutorDireccion")} />
       </div>
     );
   }
@@ -264,11 +264,9 @@ export default function EstudiantesPage() {
           steps={steps}
           onSubmit={handleSubmit}
           defaultValues={defaultValues}
-          mode="modal"
           isEditing={!!editingId}
           title={editingId ? "Editar estudiante" : "Nuevo estudiante"}
           onClose={() => { setShowForm(false); setEditingId(null); }}
-          dirtyCheck
           submitting={submitting}
         />
       )}

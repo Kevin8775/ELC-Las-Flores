@@ -8,10 +8,11 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   options: Option[];
   placeholder?: string;
   error?: string;
+  registerReturn?: any;
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ className, label, options, placeholder = "Seleccionar", error, required, ...props }, ref) => {
+  ({ className, label, options, placeholder = "Seleccionar", error, required, registerReturn, ...props }, ref) => {
     return (
       <label className={cn("block text-sm", className)}>
         <span className="flex items-center gap-1">
@@ -26,6 +27,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             "focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10",
             error && "border-red-400 focus:border-red-500 focus:ring-red-500/10"
           )}
+          {...registerReturn}
           {...props}
         >
           <option value="">{placeholder}</option>
