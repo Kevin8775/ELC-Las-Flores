@@ -6,6 +6,7 @@ import { getSaturdaysInRange, MESES } from "@/lib/saturdays";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
+import { StepWizard } from "@/components/ui/StepWizard";
 
 interface Estudiante {
   id: string;
@@ -75,6 +76,13 @@ function formatDateShort(d: Date): string {
   return `${dias[d.getDay()]} ${d.getDate()}`;
 }
 
+const STEPS = [
+  { label: "Estudiante" },
+  { label: "Tipo y periodo" },
+  { label: "Montos" },
+  { label: "Detalles" },
+];
+
 export default function PagosPage() {
   const [pagos, setPagos] = useState<Pago[]>([]);
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]);
@@ -88,6 +96,7 @@ export default function PagosPage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedSaturdays, setSelectedSaturdays] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const estudiantesFiltrados = estudiantes.filter(
     (e) =>
@@ -204,10 +213,32 @@ export default function PagosPage() {
     setVerificacion(null);
     setBusquedaEstudiante("");
     setSelectedSaturdays(new Set());
+    setCurrentStep(0);
   }
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
+  function handleNext() {
+    if (currentStep === 0 && !form.estudianteId) {
+      toast.warning("Selecciona un estudiante");
+      return;
+    }
+    if (currentStep === 1) {
+      if (!form.concepto) {
+        toast.warning("Ingresa el concepto del pago");
+        return;
+      }
+      if (form.tipoPago === "SEMANAL" && selectedSaturdays.size === 0) {
+        toast.warning("Selecciona al menos un sabado");
+        return;
+      }
+    }
+    setCurrentStep((s) => Math.min(s + 1, STEPS.length - 1));
+  }
+
+  function handlePrev() {
+    setCurrentStep((s) => Math.max(s - 1, 0));
+  }
+
+  async function handleSubmit() {
     setSubmitting(true);
     try {
       if (form.tipoPago === "SEMANAL" && saturdays.length > 0) {
@@ -317,6 +348,7 @@ export default function PagosPage() {
     });
     setEditingId(p.id);
     setShowForm(true);
+    setCurrentStep(0);
   }
 
   async function handleDelete(id: string) {
@@ -337,26 +369,38 @@ export default function PagosPage() {
     VENCIDO: "bg-red-100 text-red-800",
   };
 
+  const selectedStudent = estudiantes.find((e) => e.id === form.estudianteId);
+
   return (
     <main>
       <div className="flex items-center justify-between">
         <h1 className="font-serif text-3xl font-bold text-[#1E3A5F]">Gestion de pagos</h1>
-        <Button variant="accent" onClick={() => { setShowForm(true); setEditingId(null); setForm(defaultForm); setVerificacion(null); setBusquedaEstudiante(""); setSelectedSaturdays(new Set()); }}>
+        <Button variant="accent" onClick={() => { setShowForm(true); setEditingId(null); setForm(defaultForm); setVerificacion(null); setBusquedaEstudiante(""); setSelectedSaturdays(new Set()); setCurrentStep(0); }}>
           Registrar pago
         </Button>
       </div>
 
       {showForm && (
-        <div className="elc-card p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-serif text-xl font-bold text-[#1E3A5F]">
-              {editingId ? "Editar pago" : "Registrar pago"}
-            </h2>
-            <button onClick={resetForm} className="rounded-md bg-slate-200 px-3 py-1 text-sm hover:bg-slate-300">&times;</button>
-          </div>
-          <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
-            <Label label="Estudiante">
-              <div className="relative mt-1">
+        <StepWizard
+          currentStep={currentStep}
+          steps={STEPS}
+          onPrev={handlePrev}
+          onNext={handleNext}
+          onFinalSubmit={handleSubmit}
+          isFirst={currentStep === 0}
+          isLast={currentStep === STEPS.length - 1}
+          submitting={submitting}
+          submitLabel={editingId ? "Actualizar pago" : "Guardar pago"}
+          title={editingId ? "Editar pago" : "Registrar pago"}
+          onClose={resetForm}
+        >
+          {/* Step 1: Estudiante */}
+          {currentStep === 0 && (
+            <div className="space-y-4">
+              <label className="block text-sm font-medium text-slate-700">
+                Buscar estudiante <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
                 <input
                   type="text"
                   value={busquedaEstudiante}
@@ -369,11 +413,10 @@ export default function PagosPage() {
                   onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                   className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
                   placeholder="Buscar por nombre o matricula..."
-                  required={!form.estudianteId}
                 />
-                {form.estudianteId && !busquedaEstudiante && (
-                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-green-700">
-                    {estudiantes.find((e) => e.id === form.estudianteId)?.nombre}
+                {selectedStudent && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-700 font-semibold">
+                    {selectedStudent.nombre} ({selectedStudent.numeroMatricula})
                   </span>
                 )}
                 {showDropdown && busquedaEstudiante && (
@@ -399,218 +442,250 @@ export default function PagosPage() {
                   </div>
                 )}
               </div>
-            </Label>
 
-            <Label label="Tipo de pago">
-              <select
-                value={form.tipoPago}
-                onChange={(e) => {
-                  setForm({ ...form, tipoPago: e.target.value });
-                  setSelectedSaturdays(new Set());
-                }}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-              >
-                <option value="MENSUAL">Mensual</option>
-                <option value="SEMANAL">Semanal</option>
-              </select>
-            </Label>
+              {verificando && (
+                <p className="text-sm text-slate-500">Verificando pagos existentes...</p>
+              )}
 
-            <Label label="Concepto">
-              <input
-                value={form.concepto}
-                onChange={(e) => setForm({ ...form, concepto: e.target.value })}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-                placeholder="Ej: Mensualidad Mayo 2026"
-                required
-              />
-            </Label>
-
-            <Label label="Mes">
-              <select
-                value={form.mes}
-                onChange={(e) => {
-                  setForm({ ...form, mes: parseInt(e.target.value) });
-                  setSelectedSaturdays(new Set());
-                }}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-              >
-                {["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-                ].map((m, i) => (
-                  <option key={i + 1} value={i + 1}>{m}</option>
-                ))}
-              </select>
-            </Label>
-
-            <Label label="Ano">
-              <input
-                type="number"
-                value={form.anio}
-                onChange={(e) => {
-                  setForm({ ...form, anio: parseInt(e.target.value) });
-                  setSelectedSaturdays(new Set());
-                }}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-                min={2020}
-                max={2030}
-                required
-              />
-            </Label>
-
-            {verificacion?.advertencia && !editingId && (
-              <div className="sm:col-span-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
-                {verificacion.advertencia}
-                {verificacion.pagosExistentes.length > 0 && (
-                  <ul className="mt-2 list-disc pl-4">
-                    {verificacion.pagosExistentes.filter((p) => p.estadoPago !== "PENDIENTE").map((p) => (
-                      <li key={p.id}>{p.concepto} — C${p.montoPagado} ({p.tipoPago === "MENSUAL" ? "Mensual" : "Semanal"})</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
-
-            {verificando && (
-              <div className="sm:col-span-2 text-sm text-slate-500">Verificando pagos existentes...</div>
-            )}
-
-            {form.tipoPago === "SEMANAL" && saturdays.length > 0 && (
-              <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Selecciona los sabados a pagar ({MESES[form.mes - 1]} {form.anio})
-                </label>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  {saturdays.map((sat, i) => {
-                    const saturdayKey = sat.toISOString().slice(0, 10);
-                    const yaPagado = paidSaturdayKeys.has(saturdayKey);
-                    return (
-                      <label
-                        key={i}
-                        className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-sm ${
-                          selectedSaturdays.has(i)
-                            ? "border-green-500 bg-green-50"
-                            : yaPagado
-                              ? "border-slate-200 bg-slate-100 text-slate-400"
-                              : "border-slate-200 hover:bg-slate-50"
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedSaturdays.has(i)}
-                          disabled={!!yaPagado}
-                          onChange={() => toggleSaturday(i)}
-                          className="accent-green-700"
-                        />
-                        {formatDateShort(sat)}
-                        {yaPagado && <span className="ml-auto text-xs text-green-600">Pagado</span>}
-                      </label>
-                    );
-                  })}
+              {verificacion?.advertencia && !editingId && (
+                <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
+                  {verificacion.advertencia}
+                  {verificacion.pagosExistentes.length > 0 && (
+                    <ul className="mt-2 list-disc pl-4">
+                      {verificacion.pagosExistentes.filter((p) => p.estadoPago !== "PENDIENTE").map((p) => (
+                        <li key={p.id}>{p.concepto} — C${p.montoPagado} ({p.tipoPago === "MENSUAL" ? "Mensual" : "Semanal"})</li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-              </div>
-            )}
-
-            <Label label={form.tipoPago === "SEMANAL" ? "Monto por sabado (C$)" : "Monto total (C$)"}>
-              <input
-                type="number"
-                step="0.01"
-                value={form.monto}
-                onChange={(e) => setForm({ ...form, monto: e.target.value })}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-                placeholder="0.00"
-                required
-                readOnly={form.tipoPago === "MENSUAL"}
-              />
-            </Label>
-
-            <Label label={form.tipoPago === "SEMANAL" ? "Total a pagar (C$)" : "Monto pagado (C$)"}>
-              <input
-                type="number"
-                step="0.01"
-                value={form.tipoPago === "SEMANAL" ? (totalCalculado || "").toString() : form.montoPagado}
-                onChange={(e) => {
-                  if (form.tipoPago !== "SEMANAL") setForm({ ...form, montoPagado: e.target.value });
-                }}
-                className={`mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10 ${form.tipoPago === "SEMANAL" ? "bg-slate-50 text-slate-500" : ""}`}
-                placeholder="0.00"
-                readOnly={form.tipoPago === "SEMANAL"}
-                required
-              />
-            </Label>
-
-            <Label label="Saldo (C$)">
-              <input
-                type="number"
-                step="0.01"
-                value={form.tipoPago === "SEMANAL" ? "0.00" : (form.montoPagado && form.monto ? Math.max(0, parseFloat(form.monto) - parseFloat(form.montoPagado)).toFixed(2) : "0.00")}
-                className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500"
-                readOnly
-              />
-            </Label>
-
-            <Label label="Estado">
-              <select
-                value={form.estadoPago}
-                onChange={(e) => setForm({ ...form, estadoPago: e.target.value as FormData["estadoPago"] })}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-              >
-                <option value="PENDIENTE">Pendiente</option>
-                <option value="PAGADO">Pagado</option>
-                <option value="PARCIAL">Parcial</option>
-                <option value="VENCIDO">Vencido</option>
-              </select>
-            </Label>
-
-            <Label label="Metodo de pago">
-              <select
-                value={form.metodoPago}
-                onChange={(e) => setForm({ ...form, metodoPago: e.target.value as FormData["metodoPago"] })}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-              >
-                <option value="EFECTIVO">Efectivo</option>
-                <option value="TRANSFERENCIA">Transferencia</option>
-                <option value="OTRO">Otro</option>
-              </select>
-            </Label>
-
-            <Label label="Fecha de pago">
-              <input
-                type="date"
-                value={form.fechaPago}
-                onChange={(e) => setForm({ ...form, fechaPago: e.target.value })}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-              />
-            </Label>
-
-            <Label label="Fecha de vencimiento">
-              <input
-                type="date"
-                value={form.fechaVencimiento}
-                onChange={(e) => setForm({ ...form, fechaVencimiento: e.target.value })}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-                required
-              />
-            </Label>
-
-            <Label label="Observaciones" className="sm:col-span-2">
-              <textarea
-                value={form.observaciones}
-                onChange={(e) => setForm({ ...form, observaciones: e.target.value })}
-                className="mt-1 w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
-                rows={2}
-              />
-            </Label>
-
-            <div className="flex gap-2 sm:col-span-2 sm:justify-end">
-              <Button type="button" variant="secondary" onClick={resetForm}>
-                Cancelar
-              </Button>
-              <Button type="submit" loading={submitting} variant="accent">
-                {editingId ? "Actualizar pago" : "Guardar pago"}
-              </Button>
+              )}
             </div>
-          </form>
-        </div>
+          )}
+
+          {/* Step 2: Tipo y periodo */}
+          {currentStep === 1 && (
+            <div className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block text-sm">
+                  <span className="flex items-center gap-1">Tipo de pago <span className="text-red-500">*</span></span>
+                  <select
+                    value={form.tipoPago}
+                    onChange={(e) => {
+                      setForm({ ...form, tipoPago: e.target.value });
+                      setSelectedSaturdays(new Set());
+                    }}
+                    className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                  >
+                    <option value="MENSUAL">Mensual</option>
+                    <option value="SEMANAL">Semanal</option>
+                  </select>
+                </label>
+
+                <label className="block text-sm">
+                  <span className="flex items-center gap-1">Concepto <span className="text-red-500">*</span></span>
+                  <input
+                    value={form.concepto}
+                    onChange={(e) => setForm({ ...form, concepto: e.target.value })}
+                    className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                    placeholder="Ej: Mensualidad Mayo 2026"
+                    required
+                  />
+                </label>
+
+                <label className="block text-sm">
+                  <span className="flex items-center gap-1">Mes <span className="text-red-500">*</span></span>
+                  <select
+                    value={form.mes}
+                    onChange={(e) => {
+                      setForm({ ...form, mes: parseInt(e.target.value) });
+                      setSelectedSaturdays(new Set());
+                    }}
+                    className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                  >
+                    {["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+                    ].map((m, i) => (
+                      <option key={i + 1} value={i + 1}>{m}</option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="block text-sm">
+                  <span className="flex items-center gap-1">Ano <span className="text-red-500">*</span></span>
+                  <input
+                    type="number"
+                    value={form.anio}
+                    onChange={(e) => {
+                      setForm({ ...form, anio: parseInt(e.target.value) });
+                      setSelectedSaturdays(new Set());
+                    }}
+                    className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                    min={2020}
+                    max={2030}
+                    required
+                  />
+                </label>
+              </div>
+
+              {form.tipoPago === "SEMANAL" && saturdays.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Selecciona los sabados a pagar ({MESES[form.mes - 1]} {form.anio})
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {saturdays.map((sat, i) => {
+                      const saturdayKey = sat.toISOString().slice(0, 10);
+                      const yaPagado = paidSaturdayKeys.has(saturdayKey);
+                      return (
+                        <label
+                          key={i}
+                          className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-sm ${
+                            selectedSaturdays.has(i)
+                              ? "border-green-500 bg-green-50"
+                              : yaPagado
+                                ? "border-slate-200 bg-slate-100 text-slate-400"
+                                : "border-slate-200 hover:bg-slate-50"
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedSaturdays.has(i)}
+                            disabled={!!yaPagado}
+                            onChange={() => toggleSaturday(i)}
+                            className="accent-green-700"
+                          />
+                          {formatDateShort(sat)}
+                          {yaPagado && <span className="ml-auto text-xs text-green-600">Pagado</span>}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Step 3: Montos */}
+          {currentStep === 2 && (
+            <div className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block text-sm">
+                  <span className="flex items-center gap-1">{form.tipoPago === "SEMANAL" ? "Monto por sabado (C$)" : "Monto total (C$)"} <span className="text-red-500">*</span></span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={form.monto}
+                    onChange={(e) => setForm({ ...form, monto: e.target.value })}
+                    className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                    placeholder="0.00"
+                    required
+                    readOnly={form.tipoPago === "MENSUAL"}
+                  />
+                </label>
+
+                <label className="block text-sm">
+                  <span className="flex items-center gap-1">{form.tipoPago === "SEMANAL" ? "Total a pagar (C$)" : "Monto pagado (C$)"} <span className="text-red-500">*</span></span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={form.tipoPago === "SEMANAL" ? (totalCalculado || "").toString() : form.montoPagado}
+                    onChange={(e) => {
+                      if (form.tipoPago !== "SEMANAL") setForm({ ...form, montoPagado: e.target.value });
+                    }}
+                    className={`mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10 ${form.tipoPago === "SEMANAL" ? "bg-slate-50 text-slate-500" : ""}`}
+                    placeholder="0.00"
+                    readOnly={form.tipoPago === "SEMANAL"}
+                    required
+                  />
+                </label>
+
+                <label className="block text-sm sm:col-span-2">
+                  <span className="flex items-center gap-1">Saldo (C$)</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={form.tipoPago === "SEMANAL" ? "0.00" : (form.montoPagado && form.monto ? Math.max(0, parseFloat(form.monto) - parseFloat(form.montoPagado)).toFixed(2) : "0.00")}
+                    className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500"
+                    readOnly
+                  />
+                </label>
+              </div>
+
+              {form.tipoPago === "SEMANAL" && (
+                <div className="rounded-lg bg-blue-50 p-3 text-sm text-blue-800">
+                  <p className="font-semibold">Resumen semanal:</p>
+                  <p>{selectedSaturdays.size} sabados seleccionados × C${WEEKLY_AMOUNT} = <span className="font-bold">C${totalCalculado}</span></p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Step 4: Detalles */}
+          {currentStep === 3 && (
+            <div className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block text-sm">
+                  <span className="flex items-center gap-1">Estado <span className="text-red-500">*</span></span>
+                  <select
+                    value={form.estadoPago}
+                    onChange={(e) => setForm({ ...form, estadoPago: e.target.value as FormData["estadoPago"] })}
+                    className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                  >
+                    <option value="PENDIENTE">Pendiente</option>
+                    <option value="PAGADO">Pagado</option>
+                    <option value="PARCIAL">Parcial</option>
+                    <option value="VENCIDO">Vencido</option>
+                  </select>
+                </label>
+
+                <label className="block text-sm">
+                  <span className="flex items-center gap-1">Metodo de pago <span className="text-red-500">*</span></span>
+                  <select
+                    value={form.metodoPago}
+                    onChange={(e) => setForm({ ...form, metodoPago: e.target.value as FormData["metodoPago"] })}
+                    className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                  >
+                    <option value="EFECTIVO">Efectivo</option>
+                    <option value="TRANSFERENCIA">Transferencia</option>
+                    <option value="OTRO">Otro</option>
+                  </select>
+                </label>
+
+                <label className="block text-sm">
+                  <span className="flex items-center gap-1">Fecha de pago</span>
+                  <input
+                    type="date"
+                    value={form.fechaPago}
+                    onChange={(e) => setForm({ ...form, fechaPago: e.target.value })}
+                    className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                  />
+                </label>
+
+                <label className="block text-sm">
+                  <span className="flex items-center gap-1">Fecha de vencimiento <span className="text-red-500">*</span></span>
+                  <input
+                    type="date"
+                    value={form.fechaVencimiento}
+                    onChange={(e) => setForm({ ...form, fechaVencimiento: e.target.value })}
+                    className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                    required
+                  />
+                </label>
+
+                <label className="block text-sm sm:col-span-2">
+                  <span className="flex items-center gap-1">Observaciones</span>
+                  <textarea
+                    value={form.observaciones}
+                    onChange={(e) => setForm({ ...form, observaciones: e.target.value })}
+                    className="mt-1 w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/10"
+                    rows={3}
+                    placeholder="Notas adicionales (opcional)"
+                  />
+                </label>
+              </div>
+            </div>
+          )}
+        </StepWizard>
       )}
 
       {loading ? (
@@ -666,14 +741,5 @@ export default function PagosPage() {
       </div>
       )}
     </main>
-  );
-}
-
-function Label({ label, className, children }: { label: string; className?: string; children: React.ReactNode }) {
-  return (
-    <label className={`block text-sm ${className ?? ""}`}>
-      {label}
-      {children}
-    </label>
   );
 }
