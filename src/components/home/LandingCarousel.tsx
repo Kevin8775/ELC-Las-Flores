@@ -33,13 +33,13 @@ export function LandingCarousel() {
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
+    const fallback = fallbackSlides.map((s, i) => ({ id: `fb-${i}`, src: s.src, alt: s.alt }));
     api<{ slides: SlideData[] }>("/slides")
       .then((data) => {
-        if (data.slides.length > 0) setSlides(data.slides);
-        else setSlides(fallbackSlides.map((s, i) => ({ id: `fb-${i}`, src: s.src, alt: s.alt })));
+        setSlides(data.slides.length > 0 ? [...fallback, ...data.slides] : fallback);
       })
       .catch(() => {
-        setSlides(fallbackSlides.map((s, i) => ({ id: `fb-${i}`, src: s.src, alt: s.alt })));
+        setSlides(fallback);
       });
   }, []);
 
@@ -103,7 +103,7 @@ export function LandingCarousel() {
   if (slides.length === 0) return null;
 
   return (
-    <section className="relative pt-8 pb-4 md:pt-12">
+    <section className="relative py-4">
       <div className="absolute inset-0 overflow-hidden">
         <Image
           src={slides[activeIndex]?.src || fallbackSlides[0].src}
@@ -116,7 +116,7 @@ export function LandingCarousel() {
       </div>
 
       <div
-        className="group relative px-4"
+        className="group relative"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         onTouchStart={handleTouchStart}
@@ -129,7 +129,7 @@ export function LandingCarousel() {
         <div className="relative" style={{ perspective: "1200px" }}>
           <div
             className="relative flex items-center justify-center"
-            style={{ height: "clamp(280px, 50vw, 580px)" }}
+            style={{ height: "clamp(400px, 80vh, 100vh)" }}
           >
             {slides.map((slide, i) => {
               const offset = i - activeIndex;
@@ -145,8 +145,8 @@ export function LandingCarousel() {
                   key={slide.id}
                   className="coverflow-card absolute left-1/2 top-1/2"
                   style={{
-                    width: "clamp(260px, 75vw, 900px)",
-                    aspectRatio: "4/3",
+                    width: "min(90vw, 1400px)",
+                    aspectRatio: "16/9",
                     transform: `
                       translate(calc(-50% + ${offset * 18}%), -50%)
                       scale(${1 - absOffset * 0.15})
@@ -172,7 +172,7 @@ export function LandingCarousel() {
                         : "shadow-xl shadow-slate-900/10"
                     }`}
                     priority={i === 0}
-                    sizes="(max-width: 768px) 75vw, 900px"
+                    sizes="90vw"
                   />
                 </div>
               );
@@ -183,18 +183,18 @@ export function LandingCarousel() {
         <button
           type="button"
           onClick={prev}
-          className="absolute left-4 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-lg shadow-slate-900/10 opacity-0 backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl group-hover:opacity-100"
+          className="absolute left-4 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-lg shadow-slate-900/10 opacity-0 backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl group-hover:opacity-100 md:left-6"
           aria-label="Imagen anterior"
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-6 w-6" />
         </button>
         <button
           type="button"
           onClick={next}
-          className="absolute right-4 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-lg shadow-slate-900/10 opacity-0 backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl group-hover:opacity-100"
+          className="absolute right-4 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-lg shadow-slate-900/10 opacity-0 backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl group-hover:opacity-100 md:right-6"
           aria-label="Imagen siguiente"
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-6 w-6" />
         </button>
 
         <div className="relative z-20 mt-6 flex items-center justify-center gap-2.5">
