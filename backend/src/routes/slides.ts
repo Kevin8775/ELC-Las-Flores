@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { prisma } from "../lib/prisma";
 import { requireAuth } from "../middleware/auth";
-import { upload, uploadToImageKit } from "../lib/upload";
 
 export const slidesRouter = Router();
 
@@ -10,22 +9,22 @@ slidesRouter.get("/", async (_req, res) => {
   res.json({ slides });
 });
 
-slidesRouter.post("/", requireAuth, upload.single("imagen"), async (req, res) => {
+slidesRouter.post("/", requireAuth, async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: "Imagen requerida" });
-    const src = await uploadToImageKit(req.file, "elc/slides");
+    const { src, alt } = req.body;
+    if (!src) return res.status(400).json({ error: "src requerido" });
     const maxOrden = await prisma.slide.aggregate({ _max: { orden: true } });
     const slide = await prisma.slide.create({
       data: {
         src,
-        alt: req.body.alt || null,
+        alt: alt || null,
         orden: (maxOrden._max.orden ?? -1) + 1,
       },
     });
     res.status(201).json({ slide });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Error al subir imagen" });
+    res.status(500).json({ error: "Error al crear slide" });
   }
 });
 

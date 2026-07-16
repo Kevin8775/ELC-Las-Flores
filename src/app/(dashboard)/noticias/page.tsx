@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { api, apiUpload } from "@/lib/api";
+import { api } from "@/lib/api";
 import { Loader2, Megaphone, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { MultiStepForm, Step } from "@/components/ui/MultiStepForm";
@@ -75,13 +75,30 @@ export default function NoticiasAdminPage() {
   const handleCreate = async (data: any) => {
     setSaving(true);
     try {
-      const fd = new FormData();
-      fd.append("titulo", data.titulo.trim());
-      fd.append("contenido", data.contenido.trim());
-      fd.append("categoria", data.categoria);
-      files.forEach((f) => fd.append("imagenes", f));
+      let imagenes: { url: string; orden: number }[] = [];
+      if (files.length > 0) {
+        const uploaded: { url: string; orden: number }[] = [];
+        for (let i = 0; i < files.length; i++) {
+          const fd = new FormData();
+          fd.append("file", files[i]);
+          fd.append("folder", "elc/noticias");
+          const blobRes = await fetch("/api/blob/upload", { method: "POST", body: fd });
+          if (!blobRes.ok) throw new Error("Error al subir imagen");
+          const { url } = await blobRes.json() as { url: string };
+          uploaded.push({ url, orden: i });
+        }
+        imagenes = uploaded;
+      }
 
-      await apiUpload("/noticias", fd);
+      await api("/noticias", {
+        method: "POST",
+        body: JSON.stringify({
+          titulo: data.titulo.trim(),
+          contenido: data.contenido.trim(),
+          categoria: data.categoria,
+          imagenes,
+        }),
+      });
       setFiles([]);
       setPreviews([]);
       setShowForm(false);

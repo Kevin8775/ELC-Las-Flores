@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { api, apiUpload } from "@/lib/api";
+import { api } from "@/lib/api";
 import { Loader2, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -46,9 +46,16 @@ export default function SlidesAdminPage() {
 
     try {
       const fd = new FormData();
-      fd.append("imagen", file);
-      if (alt.trim()) fd.append("alt", alt.trim());
-      await apiUpload("/slides", fd);
+      fd.append("file", file);
+      fd.append("folder", "elc/slides");
+      const blobRes = await fetch("/api/blob/upload", { method: "POST", body: fd });
+      if (!blobRes.ok) throw new Error("Error al subir imagen");
+      const { url } = await blobRes.json() as { url: string };
+
+      await api("/slides", {
+        method: "POST",
+        body: JSON.stringify({ src: url, alt: alt.trim() || null }),
+      });
       setFile(null);
       setAlt("");
       setPreview(null);
