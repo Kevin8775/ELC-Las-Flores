@@ -126,13 +126,4 @@ html {
     0 12px 32px -8px rgb(0 0 0 / 0.12);
 }
 
-.coverflow-card {
-  transition:
-    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    filter 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    z-index 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform, opacity;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
+
