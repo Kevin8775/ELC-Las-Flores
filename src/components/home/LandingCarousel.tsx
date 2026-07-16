@@ -129,7 +129,7 @@ export function LandingCarousel() {
             src={slide.src}
             alt={slide.alt || ""}
             fill
-            className="object-cover"
+            className="object-contain"
             priority={i <= 1}
             sizes="100vw"
           />
